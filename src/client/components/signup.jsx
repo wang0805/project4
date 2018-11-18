@@ -37,56 +37,23 @@ class Signup extends Component {
         Accept: "application/json",
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ data })
+      body: JSON.stringify({
+        name: this.state.name,
+        password: this.state.password
+      })
     });
   }
   render() {
     return (
-      <div class="container">
-        <div class="row jumbotron">
-          <h1>REGISTER</h1>
-        </div>
-        <div class="row">
-          <div class="col-lg-12 col-sm-12 col-xs-12">
-            <form onSubmit={this.handleSubmit}>
-              <div class="form-group row">
-                <label for="inputUser5">User Name</label>
-                <input
-                  name="name"
-                  type="text"
-                  id="inputUser5"
-                  class="form-control"
-                  aria-describedby="usernameHelpBlock"
-                  onChange={this.handleChange}
-                />
-                <small id="usernameHelpBlock" class="form-text text-muted">
-                  Enter your desired user login name
-                </small>
-              </div>
-              <div class="form-group row">
-                <label for="inputPassword5">Password</label>
-                <input
-                  name="password"
-                  type="password"
-                  id="inputPassword5"
-                  class="form-control"
-                  aria-describedby="passwordHelpBlock"
-                  onChange={this.handleChange}
-                />
-                <small id="passwordHelpBlock" class="form-text text-muted">
-                  Your password must be 8-20 characters long, contain letters
-                  and numbers, and must not contain spaces, special characters,
-                  or emoji.
-                </small>
-              </div>
-              <div class="form-group row">
-                <button class="btn btn-primary" type="submit">
-                  Submit
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+      <div>
+        <h1>register</h1>
+        <form onSubmit={this.handleSubmit}>
+          <label>Name</label>
+          <input name="name" type="text" onChange={this.handleChange} />
+          <label>Password</label>
+          <input name="password" type="password" onChange={this.handleChange} />
+          <input type="submit" value="submit" />
+        </form>
       </div>
     );
   }
