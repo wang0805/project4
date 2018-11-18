@@ -1,24 +1,30 @@
 import React, { Component } from "react";
 import { hot } from "react-hot-loader";
-
-import Counter from "./components/counter/counter";
-import Form from "./components/form/form";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import Login from "./components/Login";
+import Signup from "./components/signup";
+import Navbar from "./components/navbar";
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      message: "hello"
+      loggedIn: false,
+      user: ""
     };
   }
 
   render() {
     return (
-      <div>
-        <Form />
-        Welcome.
-        <Counter message={this.state.message} />
-      </div>
+      <BrowserRouter>
+        <div>
+          <Navbar />
+          <Switch>
+            <Route path="/login" component={Login} />
+            <Route path="/signup" component={Signup} />
+          </Switch>
+        </div>
+      </BrowserRouter>
     );
   }
 }
