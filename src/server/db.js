@@ -1,5 +1,6 @@
 const pg = require("pg");
 const user = require("./models/user");
+const order = require("./models/order");
 
 var configs = {
   user: "wangwh",
@@ -19,6 +20,7 @@ module.exports = {
    * ADD APP MODELS HERE
    */
   user: user(pool),
+  order: order(pool),
 
   //make queries directly from here
   queryInterface: (text, params, callback) => {

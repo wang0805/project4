@@ -14,6 +14,8 @@ CREATE TABLE IF NOT EXISTS Orders (
 	quantity INT,
 	orderstatus TEXT,
     meet_address TEXT,
+	meet_lat FLOAT,
+	meet_long FLOAT,
     available_till DATE,
 	user_id INT,
 	created_at TIMESTAMP DEFAULT now(),

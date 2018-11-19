@@ -3,7 +3,6 @@ const bodyParser = require("body-parser");
 const methodOverride = require("method-override");
 const cookieParser = require("cookie-parser");
 const db = require("./db");
-
 const http = require("http");
 const logger = require("./logger");
 
@@ -25,6 +24,7 @@ const setupAppRoutes =
 const app = express();
 
 // Set up middleware
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(cookieParser());

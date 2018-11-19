@@ -28,8 +28,7 @@ module.exports = db => {
 
   const login = (request, response) => {
     db.user.login(request.body, (error, result) => {
-      //console.log(request.body);
-      console.log("result controller: ", result.rows);
+      console.log("result controller for login: ", result.rows);
       if (error) {
         console.error("Query error", error);
       } else if (result.rows[0] != undefined) {
@@ -39,7 +38,9 @@ module.exports = db => {
           response.cookie("logged_in", sha256(SALT + user_id));
           response.cookie("username", request.body.name);
           response.cookie("user_id", user_id);
-          response.status(200).redirect(`/users/${user_id}`);
+          // response.status(200).redirect(`/users/${user_id}`);
+          console.log("successful logged in");
+          response.send("logged in successfully");
         } else {
           response.send("wrong password");
         }
