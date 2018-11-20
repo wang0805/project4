@@ -1,12 +1,14 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const methodOverride = require("method-override");
-const cookieParser = require("cookie-parser");
-const db = require("./db");
-const http = require("http");
-const logger = require("./logger");
+require('dotenv').config();
 
-process.env.NODE_ENV = process.env.NODE_ENV || "development";
+const express = require('express');
+const bodyParser = require('body-parser');
+const methodOverride = require('method-override');
+const cookieParser = require('cookie-parser');
+const db = require('./db');
+const http = require('http');
+const logger = require('./logger');
+
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 process.env.HTTP_PORT = process.env.HTTP_PORT || 3000;
 
 /**
@@ -16,17 +18,15 @@ process.env.HTTP_PORT = process.env.HTTP_PORT || 3000;
  */
 
 const setupAppRoutes =
-  process.env.NODE_ENV === "development"
-    ? require("./middlewares/development")
-    : require("./middlewares/production");
+  process.env.NODE_ENV === 'development' ? require('./middlewares/development') : require('./middlewares/production');
 
 // Init express app
 const app = express();
 
 // Set up middleware
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(methodOverride("_method"));
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(methodOverride('_method'));
 app.use(cookieParser());
 
 function onUnhandledError(err) {
@@ -39,8 +39,8 @@ function onUnhandledError(err) {
   process.exit(1);
 }
 
-process.on("unhandledRejection", onUnhandledError);
-process.on("uncaughtException", onUnhandledError);
+process.on('unhandledRejection', onUnhandledError);
+process.on('uncaughtException', onUnhandledError);
 
 /**
  * ===================================
@@ -51,7 +51,7 @@ process.on("uncaughtException", onUnhandledError);
 app.use(logger.expressMiddleware);
 
 // This sets up routes other than the root routes. E.g. products the data needed for react components.
-require("./routes")(app, db);
+require('./routes')(app, db);
 
 //this sets up the root route to react app.
 setupAppRoutes(app);
@@ -65,15 +65,13 @@ setupAppRoutes(app);
  * Listen to requests on port 3000
  * ===================================
  */
-const server = app.listen(process.env.HTTP_PORT, () =>
-  console.log("~~~ Tuning in to the waves of port 3000 ~~~")
-);
+const server = app.listen(process.env.HTTP_PORT, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 // Run clean up actions when server shuts down
-server.on("close", () => {
-  console.log("Closed express server");
+server.on('close', () => {
+  console.log('Closed express server');
 
   db.pool.end(() => {
-    console.log("Shut down db connection pool");
+    console.log('Shut down db connection pool');
   });
 });

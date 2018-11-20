@@ -6,10 +6,12 @@
         "modules": false
       }
     ],
-    "react"
+    "@babel/preset-env",
+    "@babel/preset-react"
   ],
   "retainLines": true,
   "plugins": [
-    "react-hot-loader/babel"
+    "react-hot-loader/babel",
+    "@babel/plugin-proposal-class-properties"
   ]
 }

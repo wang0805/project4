@@ -1,15 +1,15 @@
-const sha256 = require("js-sha256");
-const SALT = "fxchange";
+const sha256 = require('js-sha256');
+const SALT = 'fxchange';
 
-module.exports = db => {
+module.exports = (db) => {
   //var orderStatus = ['active', 'expired', 'cancelled', 'filled'];
   const activeIndex = (request, response) => {
     db.order.activeIndex((error, result) => {
       if (error) {
-        console.log("error", error);
+        console.log('error', error);
         response.sendStatus(500);
       } else {
-        console.log("active index result rows: ", result.rows);
+        console.log('active index result rows: ', result.rows);
         //response.render('order/activeindex', {orders: result.rows});
         var resultrows = result.rows;
         response.json(resultrows);
@@ -18,15 +18,15 @@ module.exports = db => {
   };
 
   const create = (request, response) => {
-    console.log("create orders request:", request.body);
+    console.log('create orders request:', request.body);
 
     db.order.create(request.body, (error, result) => {
       if (error) {
-        console.error("error: ", error);
+        console.error('error: ', error);
         response.sendStatus(500);
       } else {
-        console.log("result of create orders rows", result.rows);
-        response.send("works!");
+        console.log('result of create orders rows', result.rows);
+        response.send('works!');
       }
     });
   };

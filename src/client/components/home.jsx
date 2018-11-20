@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import NewOrder from "./newOrder";
-import Map from "./map";
+import React, {Component} from 'react';
+import {Link} from 'react-router-dom'; //link to login router if required
+import NewOrder from './newOrder';
+import Map from './map';
 
 class Order extends Component {
   render() {
@@ -13,11 +13,9 @@ class Order extends Component {
         <td class="text-center">{this.props.order.ordertype}</td>
         <td class="text-center">{this.props.order.price}</td>
         <td class="text-center">{this.props.order.quantity}</td>
-        <td className="orderstatus text-center">
-          {this.props.order.orderstatus}
-        </td>
+        <td className="orderstatus text-center">{this.props.order.orderstatus}</td>
         {this.props.order.user_id !== parseInt(this.props.user) ? (
-          this.props.order.ordertype === "B" ? (
+          this.props.order.ordertype === 'B' ? (
             <td>Sell*</td>
           ) : (
             <td>Buy*</td>
@@ -32,8 +30,8 @@ class Order extends Component {
 
 class AllOrders extends Component {
   render() {
-    const result = this.props.result.filter(c => c.orderstatus == "active");
-    console.log("results of filtering", result);
+    const result = this.props.result.filter((c) => c.orderstatus == 'active');
+    console.log('results of filtering', result);
     return (
       <div>
         <table>
@@ -57,9 +55,7 @@ class AllOrders extends Component {
               sell or buy
             </th>
           </tr>
-          {result.map((order, index) => (
-            <Order key={index} order={order} user={this.props.user} />
-          ))}
+          {result.map((order, index) => <Order key={index} order={order} user={this.props.user} />)}
         </table>
       </div>
     );
@@ -68,11 +64,9 @@ class AllOrders extends Component {
 
 class MyOrders extends Component {
   render() {
-    console.log("props for myorders: ", this.props);
-    const result = this.props.result.filter(
-      c => c.user_id === parseInt(this.props.user)
-    );
-    console.log("results of filtering", result);
+    console.log('props for myorders: ', this.props);
+    const result = this.props.result.filter((c) => c.user_id === parseInt(this.props.user));
+    console.log('results of filtering', result);
     return (
       <div>
         <table>
@@ -96,9 +90,7 @@ class MyOrders extends Component {
               sell or buy
             </th>
           </tr>
-          {result.map((order, index) => (
-            <Order key={index} order={order} user={this.props.user} />
-          ))}
+          {result.map((order, index) => <Order key={index} order={order} user={this.props.user} />)}
         </table>
       </div>
     );
@@ -117,52 +109,41 @@ class Home extends Component {
   }
 
   updateOrder() {
-    fetch("api/orders")
-      .then(res => res.json())
-      .then(resultrows =>
-        this.setState({ result: resultrows }, () =>
-          console.log("result of fetch:", resultrows)
-        )
-      );
+    fetch('api/orders')
+      .then((res) => res.json())
+      .then((resultrows) => this.setState({result: resultrows}, () => console.log('result of fetch:', resultrows)));
   }
 
-  componentWillMount() {
-    console.log("mounted");
+  componentDidMount() {
     this.updateOrder();
   }
 
-  // handleClick() {
-  //   this.setState({ displayadd: !this.state.displayadd });
-  // }
-
   handleClick(params) {
-    this.setState({ displayadd: params });
+    this.setState({displayadd: params});
   }
 
   render() {
     return (
       <div>
         <div>
-          <Map />
+          {this.state.result.length > 0 && <Map result={this.state.result} />}
           {this.state.displayadd ? (
             <NewOrder
               user={this.props.user}
               displayOrd={this.handleClick}
               display={this.state.displayadd}
-              update={this.updateOrder()}
+              update={this.updateOrder}
             />
           ) : (
             <AllOrders result={this.state.result} />
           )}
         </div>
-        <div>this is all your orders :)</div>
+        <div>This are all your orders :)</div>
         <div>
           {this.props.loggedin && (
             <div>
               {/* <Link to="/neworder">New Order pls</Link> */}
-              <button onClick={() => this.handleClick(!this.state.displayadd)}>
-                Add order
-              </button>
+              <button onClick={() => this.handleClick(!this.state.displayadd)}>Add order</button>
               <MyOrders user={this.props.user} result={this.state.result} />
             </div>
           )}
