@@ -1,19 +1,19 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import React, {Component} from 'react';
+import {withRouter} from 'react-router-dom';
 
-import classNames from "classnames";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import IconButton from "@material-ui/core/IconButton";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormControl from "@material-ui/core/FormControl";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import {withStyles} from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
 
 // const styles = theme => ({
 //   root: {
@@ -30,10 +30,10 @@ import TextField from "@material-ui/core/TextField";
 //   }
 // });
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
-    display: "flex",
-    flexWrap: "wrap"
+    display: 'flex',
+    flexWrap: 'wrap'
   },
   margin: {
     margin: theme.spacing.unit
@@ -50,17 +50,17 @@ class Signup extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleClickShowPassword = this.handleClickShowPassword.bind(this);
     this.state = {
-      name: "",
-      password: ""
+      name: '',
+      password: ''
     };
   }
 
   handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
+    this.setState({[event.target.name]: event.target.value});
   }
 
   handleClickShowPassword() {
-    this.setState(state => ({ showPassword: !state.showPassword }));
+    this.setState((state) => ({showPassword: !state.showPassword}));
   }
 
   handleSubmit(event) {
@@ -73,19 +73,19 @@ class Signup extends Component {
     };
     console.log(data);
 
-    fetch("/users/create", {
-      method: "POST",
+    fetch('/users/create', {
+      method: 'POST',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(data)
     }).then(() => {
-      this.props.history.push("/home");
+      this.props.history.push('/home');
     });
   }
   render() {
-    const { classes } = this.props;
+    const {classes} = this.props;
 
     return (
       // <div className={classes.root}>
@@ -153,16 +153,14 @@ class Signup extends Component {
             value={this.state.name}
             onChange={this.handleChange}
             InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">@</InputAdornment>
-              )
+              startAdornment: <InputAdornment position="start">@</InputAdornment>
             }}
           />
           <TextField
             id="outlined-adornment-password"
             className={classNames(classes.margin, classes.textField)}
             variant="outlined"
-            type={this.state.showPassword ? "text" : "password"}
+            type={this.state.showPassword ? 'text' : 'password'}
             label="Password"
             name="password"
             value={this.state.password}
@@ -170,15 +168,8 @@ class Signup extends Component {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton
-                    aria-label="Toggle password visibility"
-                    onClick={this.handleClickShowPassword}
-                  >
-                    {this.state.showPassword ? (
-                      <VisibilityOff />
-                    ) : (
-                      <Visibility />
-                    )}
+                  <IconButton aria-label="Toggle password visibility" onClick={this.handleClickShowPassword}>
+                    {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
               )

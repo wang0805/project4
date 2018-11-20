@@ -1,18 +1,18 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import React, {Component} from 'react';
+import {withRouter} from 'react-router-dom';
 
-import classNames from "classnames";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import TextField from "@material-ui/core/TextField";
-import InputAdornment from "@material-ui/core/InputAdornment";
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import {withStyles} from '@material-ui/core/styles';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
-const styles = theme => ({
+const styles = (theme) => ({
   formControl: {
     margin: theme.spacing.unit
   },
@@ -20,7 +20,7 @@ const styles = theme => ({
     margin: theme.spacing.unit
   },
   root: {
-    display: "flex"
+    display: 'flex'
   },
   textField: {
     flexBasis: 200
@@ -31,7 +31,7 @@ class NewOrder extends Component {
   getGoogleMaps() {
     // If we haven't already defined the promise, define it
     if (!this.googleMapsPromise) {
-      this.googleMapsPromise = new Promise(resolve => {
+      this.googleMapsPromise = new Promise((resolve) => {
         // Add a global handler for when the API finishes loading
         window.resolveGoogleMapsPromise = () => {
           // Resolve the promise
@@ -42,10 +42,10 @@ class NewOrder extends Component {
         };
 
         // Load the Google Maps API
-        const script = document.createElement("script");
-        const API = "AIzaSyACySFLlLmNi76Xy9u-nD_LtiVJLUnkuN0";
+        const script = document.createElement('script');
+        const API = 'AIzaSyACySFLlLmNi76Xy9u-nD_LtiVJLUnkuN0';
         script.src =
-          "https://maps.googleapis.com/maps/api/js?key=AIzaSyACySFLlLmNi76Xy9u-nD_LtiVJLUnkuN0&libraries=places&callback=resolveGoogleMapsPromise";
+          'https://maps.googleapis.com/maps/api/js?key=AIzaSyACySFLlLmNi76Xy9u-nD_LtiVJLUnkuN0&libraries=places&callback=resolveGoogleMapsPromise';
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
@@ -60,17 +60,18 @@ class NewOrder extends Component {
     super();
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.test = this.test.bind(this);
     this.state = {
-      ticker: "",
-      ordertype: "B",
+      ticker: '',
+      ordertype: 'B',
       price: null,
       quantity: null,
-      orderstatus: "active",
-      meet_address: "",
+      orderstatus: 'active',
+      meet_address: '',
       meet_lat: 0,
       meet_long: 0,
-      available_till: "",
-      user_id: ""
+      available_till: '',
+      user_id: ''
     };
   }
 
@@ -79,24 +80,25 @@ class NewOrder extends Component {
   }
 
   componentDidMount() {
+    var reactThis = this;
     this.forceUpdate();
     let number = parseInt(this.props.user);
-    this.setState({ user_id: number });
-    this.getGoogleMaps().then(google => {
+    this.setState({user_id: number});
+    this.getGoogleMaps().then((google) => {
       //autocomplete
-      console.log(document.querySelector("#searchTextField"));
-      var input = document.getElementById("searchTextField");
+      console.log(document.querySelector('#searchTextField'));
+      var input = document.getElementById('searchTextField');
       var options = {
-        componentRestrictions: { country: "sg" }
+        componentRestrictions: {country: 'sg'}
       };
       var autocomplete = new google.maps.places.Autocomplete(input, options);
-      google.maps.event.addListener(autocomplete, "place_changed", function() {
+      google.maps.event.addListener(autocomplete, 'place_changed', function() {
         var place = autocomplete.getPlace();
         var lat = place.geometry.location.lat();
         var lng = place.geometry.location.lng();
-
-        document.getElementById("lat").value = lat;
-        document.getElementById("long").value = lng;
+        reactThis.setState({meet_lat: lat, meet_long: lng});
+        document.getElementById('lat').value = lat;
+        document.getElementById('long').value = lng;
       });
     });
   }
@@ -105,7 +107,7 @@ class NewOrder extends Component {
   //   };
 
   handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
+    this.setState({[event.target.name]: event.target.value});
   }
 
   handleSubmit(event) {
@@ -125,27 +127,32 @@ class NewOrder extends Component {
     };
     console.log(data);
 
-    fetch("/order/new", {
-      method: "POST",
+    fetch('/order/new', {
+      method: 'POST',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(data)
     }).then(() => {
-      console.log("this is a success!!");
+      console.log('this is a success!!');
       this.props.displayOrd(false);
       this.props.update();
       // this.props.history.push("/home"); //not pushing bcos the url is diff
     });
   }
 
+  test() {
+    console.log(this.state);
+  }
+
   render() {
     console.log(this.props.user);
-    const { classes } = this.props;
+    const {classes} = this.props;
 
     return (
       <div className={classes.root}>
+        <button onClick={this.test}>TEST</button>
         <form onSubmit={this.handleSubmit}>
           <FormControl className={classes.formControl} variant="outlined">
             <TextField
@@ -157,9 +164,7 @@ class NewOrder extends Component {
               value={this.state.ticker}
               onChange={this.handleChange}
               InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">@</InputAdornment>
-                )
+                startAdornment: <InputAdornment position="start">@</InputAdornment>
               }}
             />
           </FormControl>
@@ -186,9 +191,7 @@ class NewOrder extends Component {
               value={this.state.price}
               onChange={this.handleChange}
               InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">$</InputAdornment>
-                )
+                startAdornment: <InputAdornment position="start">$</InputAdornment>
               }}
             />
           </FormControl>
@@ -202,9 +205,7 @@ class NewOrder extends Component {
               value={this.state.quantity}
               onChange={this.handleChange}
               InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">qty</InputAdornment>
-                )
+                startAdornment: <InputAdornment position="start">Qty</InputAdornment>
               }}
             />
           </FormControl>
@@ -219,14 +220,14 @@ class NewOrder extends Component {
               value={this.state.meet_address}
               onChange={this.handleChange}
               InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">@</InputAdornment>
-                )
+                startAdornment: <InputAdornment position="start">@</InputAdornment>
               }}
             />
           </FormControl>
+
           <input id="lat" />
           <input id="long" />
+
           <formControl>
             <form className={classes.container} noValidate>
               <TextField
