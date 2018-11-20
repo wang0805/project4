@@ -28,6 +28,34 @@ const styles = theme => ({
 });
 
 class NewOrder extends Component {
+  getGoogleMaps() {
+    // If we haven't already defined the promise, define it
+    if (!this.googleMapsPromise) {
+      this.googleMapsPromise = new Promise(resolve => {
+        // Add a global handler for when the API finishes loading
+        window.resolveGoogleMapsPromise = () => {
+          // Resolve the promise
+          resolve(google);
+
+          // Tidy up
+          delete window.resolveGoogleMapsPromise;
+        };
+
+        // Load the Google Maps API
+        const script = document.createElement("script");
+        const API = "AIzaSyACySFLlLmNi76Xy9u-nD_LtiVJLUnkuN0";
+        script.src =
+          "https://maps.googleapis.com/maps/api/js?key=AIzaSyACySFLlLmNi76Xy9u-nD_LtiVJLUnkuN0&libraries=places&callback=resolveGoogleMapsPromise";
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
+      });
+    }
+
+    // Return a promise for the Google Maps API
+    return this.googleMapsPromise;
+  }
+
   constructor() {
     super();
     this.handleChange = this.handleChange.bind(this);
@@ -45,12 +73,33 @@ class NewOrder extends Component {
       user_id: ""
     };
   }
+
+  componentWillMount() {
+    this.getGoogleMaps();
+  }
+
   componentDidMount() {
     this.forceUpdate();
     let number = parseInt(this.props.user);
     this.setState({ user_id: number });
-  }
+    this.getGoogleMaps().then(google => {
+      //autocomplete
+      console.log(document.querySelector("#searchTextField"));
+      var input = document.getElementById("searchTextField");
+      var options = {
+        componentRestrictions: { country: "sg" }
+      };
+      var autocomplete = new google.maps.places.Autocomplete(input, options);
+      google.maps.event.addListener(autocomplete, "place_changed", function() {
+        var place = autocomplete.getPlace();
+        var lat = place.geometry.location.lat();
+        var lng = place.geometry.location.lng();
 
+        document.getElementById("lat").value = lat;
+        document.getElementById("long").value = lng;
+      });
+    });
+  }
   //   handleRadio = event => {
   //     this.setState({ ordertype: event.target.value });
   //   };
@@ -85,7 +134,9 @@ class NewOrder extends Component {
       body: JSON.stringify(data)
     }).then(() => {
       console.log("this is a success!!");
-      this.props.history.push("/home");
+      this.props.displayOrd(false);
+      this.props.update();
+      // this.props.history.push("/home"); //not pushing bcos the url is diff
     });
   }
 
@@ -159,7 +210,8 @@ class NewOrder extends Component {
           </FormControl>
           <FormControl className={classes.formControl} variant="outlined">
             <TextField
-              id="outlined-adornment-amount"
+              // id="outlined-adornment-amount"
+              id="searchTextField"
               className={classNames(classes.margin, classes.textField)}
               variant="outlined"
               label="Meet_address"
@@ -173,23 +225,26 @@ class NewOrder extends Component {
               }}
             />
           </FormControl>
-          <FormControl className={classes.formControl} variant="outlined">
-            <TextField
-              id="outlined-adornment-amount"
-              className={classNames(classes.margin, classes.textField)}
-              variant="outlined"
-              label="Available_till"
-              name="available_till"
-              value={this.state.available_till}
-              onChange={this.handleChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">@</InputAdornment>
-                )
-              }}
-            />
-            <input type="submit" value="submit" />
-          </FormControl>
+          <input id="lat" />
+          <input id="long" />
+          <formControl>
+            <form className={classes.container} noValidate>
+              <TextField
+                id="date"
+                label="Available till"
+                type="date"
+                name="available_till"
+                value={this.state.available_till}
+                onChange={this.handleChange}
+                className={classes.textField}
+                InputLabelProps={{
+                  shrink: true
+                }}
+              />
+            </form>
+          </formControl>
+
+          <input type="submit" value="submit" />
         </form>
       </div>
     );
