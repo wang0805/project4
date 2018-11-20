@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import NewOrder from "./newOrder";
+import Map from "./map";
 
 class Order extends Component {
   render() {
@@ -106,13 +108,15 @@ class MyOrders extends Component {
 class Home extends Component {
   constructor(props) {
     super(props);
+    this.updateOrder = this.updateOrder.bind(this);
+    this.handleClick = this.handleClick.bind(this);
     this.state = {
-      result: []
+      result: [],
+      displayadd: false
     };
   }
 
-  componentDidMount() {
-    console.log("mounted");
+  updateOrder() {
     fetch("api/orders")
       .then(res => res.json())
       .then(resultrows =>
@@ -122,17 +126,43 @@ class Home extends Component {
       );
   }
 
+  componentWillMount() {
+    console.log("mounted");
+    this.updateOrder();
+  }
+
+  // handleClick() {
+  //   this.setState({ displayadd: !this.state.displayadd });
+  // }
+
+  handleClick(params) {
+    this.setState({ displayadd: params });
+  }
+
   render() {
     return (
       <div>
         <div>
-          <AllOrders result={this.state.result} />
+          <Map />
+          {this.state.displayadd ? (
+            <NewOrder
+              user={this.props.user}
+              displayOrd={this.handleClick}
+              display={this.state.displayadd}
+              update={this.updateOrder()}
+            />
+          ) : (
+            <AllOrders result={this.state.result} />
+          )}
         </div>
         <div>this is all your orders :)</div>
         <div>
           {this.props.loggedin && (
             <div>
-              <Link to="/neworder">New Order pls</Link>
+              {/* <Link to="/neworder">New Order pls</Link> */}
+              <button onClick={() => this.handleClick(!this.state.displayadd)}>
+                Add order
+              </button>
               <MyOrders user={this.props.user} result={this.state.result} />
             </div>
           )}
