@@ -1,7 +1,7 @@
 module.exports = (dbPoolInstance) => {
   const activeIndex = (callback) => {
     const query =
-      'SELECT id, ticker, ordertype, price, orderstatus, quantity, available_till, user_id FROM orders ORDER BY ticker, ordertype, price DESC;';
+      'SELECT id, ticker, ordertype, price, orderstatus, quantity, meet_address, meet_lat, meet_long, available_till, user_id FROM orders ORDER BY ticker, ordertype, price DESC;';
 
     dbPoolInstance.query(query, (error, result) => {
       callback(error, result);

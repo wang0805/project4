@@ -1,11 +1,11 @@
-import React, { Component } from "react";
-import { hot } from "react-hot-loader";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-import Login from "./components/Login";
-import Signup from "./components/signup";
-import Navbar from "./components/navbar";
-import Home from "./components/home";
-import NewOrder from "./components/newOrder";
+import React, {Component} from 'react';
+import {hot} from 'react-hot-loader';
+import {BrowserRouter, Route, Switch} from 'react-router-dom';
+import Login from './components/Login';
+import Signup from './components/signup';
+import Navbar from './components/navbar';
+import Home from './components/home';
+import NewOrder from './components/newOrder';
 
 class App extends Component {
   constructor() {
@@ -14,16 +14,16 @@ class App extends Component {
     this.setUser = this.setUser.bind(this);
     this.state = {
       loggedIn: false,
-      user: ""
+      user: ''
     };
   }
 
   setLogin(params) {
-    this.setState({ loggedIn: params });
+    this.setState({loggedIn: params});
   }
 
   setUser(params) {
-    this.setState({ user: params });
+    this.setState({user: params});
   }
 
   render() {
@@ -37,12 +37,7 @@ class App extends Component {
             setUser={this.setUser}
           />
           <Switch>
-            <Route
-              path="/home"
-              render={() => (
-                <Home loggedin={this.state.loggedIn} user={this.state.user} />
-              )}
-            />
+            <Route path="/home" render={() => <Home loggedin={this.state.loggedIn} user={this.state.user} />} />
             <Route
               path="/login"
               render={() => (
@@ -54,21 +49,8 @@ class App extends Component {
                 />
               )}
             />
-            <Route
-              path="/signup"
-              render={() => (
-                <Signup loggedin={this.state.loggedIn} user={this.state.user} />
-              )}
-            />
-            <Route
-              path="/neworder"
-              render={() => (
-                <NewOrder
-                  loggedin={this.state.loggedIn}
-                  user={this.state.user}
-                />
-              )}
-            />
+            <Route path="/signup" render={() => <Signup loggedin={this.state.loggedIn} user={this.state.user} />} />
+            <Route path="/neworder" render={() => <NewOrder loggedin={this.state.loggedIn} user={this.state.user} />} />
           </Switch>
         </div>
       </BrowserRouter>

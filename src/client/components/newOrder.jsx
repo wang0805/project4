@@ -28,34 +28,6 @@ const styles = (theme) => ({
 });
 
 class NewOrder extends Component {
-  getGoogleMaps() {
-    // If we haven't already defined the promise, define it
-    if (!this.googleMapsPromise) {
-      this.googleMapsPromise = new Promise((resolve) => {
-        // Add a global handler for when the API finishes loading
-        window.resolveGoogleMapsPromise = () => {
-          // Resolve the promise
-          resolve(google);
-
-          // Tidy up
-          delete window.resolveGoogleMapsPromise;
-        };
-
-        // Load the Google Maps API
-        const script = document.createElement('script');
-        const API = 'AIzaSyACySFLlLmNi76Xy9u-nD_LtiVJLUnkuN0';
-        script.src =
-          'https://maps.googleapis.com/maps/api/js?key=AIzaSyACySFLlLmNi76Xy9u-nD_LtiVJLUnkuN0&libraries=places&callback=resolveGoogleMapsPromise';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-      });
-    }
-
-    // Return a promise for the Google Maps API
-    return this.googleMapsPromise;
-  }
-
   constructor() {
     super();
     this.handleChange = this.handleChange.bind(this);
@@ -75,6 +47,31 @@ class NewOrder extends Component {
     };
   }
 
+  getGoogleMaps() {
+    // If we haven't already defined the promise, define it
+    if (!this.googleMapsPromise) {
+      this.googleMapsPromise = new Promise((resolve) => {
+        // Add a global handler for when the API finishes loading
+        window.resolveGoogleMapsPromise = () => {
+          // Resolve the promise
+          resolve(google);
+          // Tidy up
+          delete window.resolveGoogleMapsPromise;
+        };
+        // Load the Google Maps API
+        const script = document.createElement('script');
+        const API = 'AIzaSyACySFLlLmNi76Xy9u-nD_LtiVJLUnkuN0';
+        script.src =
+          'https://maps.googleapis.com/maps/api/js?key=AIzaSyACySFLlLmNi76Xy9u-nD_LtiVJLUnkuN0&libraries=places&callback=resolveGoogleMapsPromise';
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
+      });
+    }
+    // Return a promise for the Google Maps API
+    return this.googleMapsPromise;
+  }
+
   componentWillMount() {
     this.getGoogleMaps();
   }
@@ -85,8 +82,7 @@ class NewOrder extends Component {
     let number = parseInt(this.props.user);
     this.setState({user_id: number});
     this.getGoogleMaps().then((google) => {
-      //autocomplete
-      console.log(document.querySelector('#searchTextField'));
+      //autocomplete function
       var input = document.getElementById('searchTextField');
       var options = {
         componentRestrictions: {country: 'sg'}
@@ -96,9 +92,9 @@ class NewOrder extends Component {
         var place = autocomplete.getPlace();
         var lat = place.geometry.location.lat();
         var lng = place.geometry.location.lng();
-        reactThis.setState({meet_lat: lat, meet_long: lng});
-        document.getElementById('lat').value = lat;
-        document.getElementById('long').value = lng;
+        reactThis.setState({meet_lat: lat, meet_long: lng}); //set the lat and long for submit
+        document.getElementById('lat').value = lat; //test
+        document.getElementById('long').value = lng; //test
       });
     });
   }

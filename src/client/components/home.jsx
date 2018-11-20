@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
+import {Link} from 'react-router-dom'; //link to login router if required
 import NewOrder from './newOrder';
 import Map from './map';
 
@@ -117,9 +117,6 @@ class Home extends Component {
   componentDidMount() {
     this.updateOrder();
   }
-  // handleClick() {
-  //   this.setState({ displayadd: !this.state.displayadd });
-  // }
 
   handleClick(params) {
     this.setState({displayadd: params});
@@ -129,7 +126,7 @@ class Home extends Component {
     return (
       <div>
         <div>
-          <Map />
+          {this.state.result.length > 0 && <Map result={this.state.result} />}
           {this.state.displayadd ? (
             <NewOrder
               user={this.props.user}
@@ -141,7 +138,7 @@ class Home extends Component {
             <AllOrders result={this.state.result} />
           )}
         </div>
-        <div>this is all your orders :)</div>
+        <div>This are all your orders :)</div>
         <div>
           {this.props.loggedin && (
             <div>
