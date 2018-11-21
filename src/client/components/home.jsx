@@ -33,8 +33,7 @@ class Order extends Component {
 
 class AllOrders extends Component {
   render() {
-    const result = this.props.result.filter((c) => c.orderstatus == 'active');
-    console.log('results of filtering', result);
+    const result = this.props.result.filter((c) => c.orderstatus == 'active' && c.user_id != this.props.user);
     return (
       <div>
         <table>
@@ -175,7 +174,7 @@ class Home extends Component {
               update={this.updateOrder}
             />
           ) : (
-            <AllOrders result={this.state.result} />
+            <AllOrders result={this.state.result} user={this.props.user} />
           )}
         </div>
         {this.props.loggedin && (
