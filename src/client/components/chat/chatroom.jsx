@@ -7,7 +7,7 @@ class Chatroom extends Component {
     this.state = {
       myUser: null,
       receiver: null,
-      messages: [{to: 'who', from: 'me', content: 'what'}, {to: 'who', from: 'me', content: 'what'}],
+      messages: [],
       input: ''
     };
     this.handleClick = this.handleClick.bind(this);
