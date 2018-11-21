@@ -39,6 +39,7 @@ class Login extends Component {
     this.state = {
       name: '',
       password: '',
+      username: '',
       showPassword: false
     };
   }
@@ -70,15 +71,6 @@ class Login extends Component {
     };
     console.log(data);
 
-    // axios
-    //   .post(`http://localhost:3000/users/login`, data)
-    //   .then(() => {
-    //     console.log("worked");
-    //   })
-    //   .catch(function(error) {
-    //     console.log(error);
-    //   });
-
     fetch('/users/login', {
       method: 'POST',
       headers: {
@@ -91,7 +83,8 @@ class Login extends Component {
       var cookiesObj = this.readCookie(document.cookie);
       if (cookiesObj.logged_in) {
         this.props.setLogin(true);
-        this.props.setUser(cookiesObj[' user_id']);
+        this.props.setUser(parseInt(cookiesObj[' user_id']));
+        this.props.setUsername(cookiesObj[' username']);
         this.props.history.push('/home');
       }
     });
@@ -101,17 +94,6 @@ class Login extends Component {
     const {classes} = this.props;
     console.log(this.props);
     return (
-      //   <div>
-      //     <div>login test</div>
-      //     <form onSubmit={this.handleSubmit}>
-      //       <label>Name</label>
-      //       <input name="name" type="text" onChange={this.handleChange} />
-      //       <label>Password</label>
-      //       <input name="password" type="password" onChange={this.handleChange} />
-      //       <input type="submit" value="submit" />
-      //     </form>
-      //     <Link to="/signup">Signup</Link>
-      //   </div>
       <div className={classes.root}>
         <form onSubmit={this.handleSubmit}>
           <Grid container spacing={24}>

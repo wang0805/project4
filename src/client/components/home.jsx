@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom'; //link to login router if required
+// import {Link} from 'react-router-dom'; //link to login router if required
 import NewOrder from './newOrder';
 import Map from './map';
+import socketIOClient from 'socket.io-client';
+import Chatroom from './chat/chatroom';
+// import {socketfuncs} from './functions'; //if using helper functions
 
 class Order extends Component {
   render() {
@@ -16,9 +19,9 @@ class Order extends Component {
         <td className="orderstatus text-center">{this.props.order.orderstatus}</td>
         {this.props.order.user_id !== parseInt(this.props.user) ? (
           this.props.order.ordertype === 'B' ? (
-            <td>Sell*</td>
+            <td>Sell*change</td>
           ) : (
-            <td>Buy*</td>
+            <td>Buy*change</td>
           )
         ) : (
           <td />
@@ -102,10 +105,21 @@ class Home extends Component {
     super(props);
     this.updateOrder = this.updateOrder.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.handleMessage = this.handleMessage.bind(this);
     this.state = {
       result: [],
-      displayadd: false
+      displayadd: false,
+      displaychat: false,
+      messages: []
     };
+  }
+
+  setMsgs(params) {
+    this.setState({messages: [...this.state.messages, params]});
+  }
+
+  handleChat(params) {
+    this.setState({displaychat: params});
   }
 
   updateOrder() {
@@ -116,6 +130,32 @@ class Home extends Component {
 
   componentDidMount() {
     this.updateOrder();
+    // -- set interval call from socket -- //
+    // const {endpoint} = this.state;
+    // const socket = socketIOClient(endpoint);
+    // socket.on('APICALL', (data) => this.setState({result: data}));
+
+    const socket = socketIOClient('http://127.0.0.1:3000/');
+    socket.on('added order', (data) => {
+      if (data.addOrder === true) {
+        console.log('testing if orders live updating works ~~~~~~~');
+        fetch('api/orders')
+          .then((res) => res.json())
+          .then((resultrows) => this.setState({result: resultrows}, () => console.log('result of fetch:', resultrows)));
+      } else if (data.message === true) {
+        console.log('display the messages from chat pls ~~~~~~~');
+        this.setState({messages: [...this.state.messages, data]});
+        this.setState({displaychat: false});
+        this.setState({displaychat: true});
+      } else {
+        console.log('nothing here to see ~~~~~');
+      }
+    });
+  }
+
+  handleMessage(data) {
+    const socket = socketIOClient('http://127.0.0.1:3000/');
+    socket.emit('added order', data);
   }
 
   handleClick(params) {
@@ -138,11 +178,25 @@ class Home extends Component {
             <AllOrders result={this.state.result} />
           )}
         </div>
+        {this.props.loggedin && (
+          <button onClick={() => this.handleChat(!this.state.displaychat)}>Display chat room</button>
+        )}
+        {this.state.displaychat ? (
+          <Chatroom
+            username={this.props.username}
+            user={this.props.user}
+            idMarker={this.props.idMarker}
+            messages={this.state.messages}
+            setMsgs={this.state.setMsgs}
+            handleMessage={this.handleMessage}
+          />
+        ) : (
+          ''
+        )}
         <div>This are all your orders :)</div>
         <div>
           {this.props.loggedin && (
             <div>
-              {/* <Link to="/neworder">New Order pls</Link> */}
               <button onClick={() => this.handleClick(!this.state.displayadd)}>Add order</button>
               <MyOrders user={this.props.user} result={this.state.result} />
             </div>

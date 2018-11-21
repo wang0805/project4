@@ -1,5 +1,6 @@
 const sha256 = require('js-sha256');
 const SALT = 'fxchange';
+const socketfuncs = require('../../client/components/functions'); //server has to use require not import
 
 module.exports = (db) => {
   //var orderStatus = ['active', 'expired', 'cancelled', 'filled'];
@@ -19,13 +20,16 @@ module.exports = (db) => {
 
   const create = (request, response) => {
     console.log('create orders request:', request.body);
-
     db.order.create(request.body, (error, result) => {
       if (error) {
         console.error('error: ', error);
         response.sendStatus(500);
       } else {
         console.log('result of create orders rows', result.rows);
+
+        //if postdata suceeds, emit to server to be broadcast to others
+        let data = {addOrder: true, currencyPair: 'usd/sgd', amount: '10'};
+        socketfuncs.addOrder(data);
         response.send('works!');
       }
     });
