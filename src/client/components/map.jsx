@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {MAP_STYLE3} from './mapstyle';
 
 class Map extends Component {
   constructor(props) {
@@ -71,7 +72,8 @@ class Map extends Component {
       const sg = {lat: 1.3521, lng: 103.8198};
       const map = new google.maps.Map(document.getElementById('gmap'), {
         zoom: 12,
-        center: sg
+        center: sg,
+        styles: MAP_STYLE3
       });
       var infowindow = new google.maps.InfoWindow();
 
@@ -104,9 +106,9 @@ class Map extends Component {
               '<p>Good till: ' +
               data.available_till.split('T')[0] +
               '</p>' +
-              '<button data-foo="' +
+              '<button id="markerButton" data-foo="' +
               data.user_id +
-              '" onclick="myFunction(event)">Click me</button>'
+              '" onclick="myFunction(event)">Click to chat with me!</button>'
           ); // data-foo gives the .dataset method -> see useridMarker in App.jsx
           // console.log(place.geometry.location.lat());
           infowindow.open(map, this);

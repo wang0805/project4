@@ -5,6 +5,22 @@ import Map from './map';
 import socketIOClient from 'socket.io-client';
 import Chatroom from './chat/chatroom';
 // import {socketfuncs} from './functions'; //if using helper functions
+import Orders from './orders';
+import MyOrders from './myorders';
+//material ui
+import PropTypes from 'prop-types';
+import {withStyles} from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import NavigationIcon from '@material-ui/icons/Navigation';
+
+const styles = (theme) => ({
+  button: {
+    margin: theme.spacing.unit
+  },
+  extendedIcon: {
+    marginRight: theme.spacing.unit
+  }
+});
 
 class Order extends Component {
   render() {
@@ -31,79 +47,11 @@ class Order extends Component {
   }
 }
 
-class AllOrders extends Component {
-  render() {
-    const result = this.props.result.filter((c) => c.orderstatus == 'active' && c.user_id != this.props.user);
-    return (
-      <div>
-        <table>
-          <tr>
-            <th class="text-center" scope="col">
-              Ticker
-            </th>
-            <th class="text-center" scope="col">
-              Buy/Sell
-            </th>
-            <th class="text-center" scope="col">
-              Price
-            </th>
-            <th class="text-center" scope="col">
-              Quantity
-            </th>
-            <th class="text-center" scope="col">
-              Status
-            </th>
-            <th class="text-center" scope="col">
-              sell or buy
-            </th>
-          </tr>
-          {result.map((order, index) => <Order key={index} order={order} user={this.props.user} />)}
-        </table>
-      </div>
-    );
-  }
-}
-
-class MyOrders extends Component {
-  render() {
-    console.log('props for myorders: ', this.props);
-    const result = this.props.result.filter((c) => c.user_id === parseInt(this.props.user));
-    console.log('results of filtering', result);
-    return (
-      <div>
-        <table>
-          <tr>
-            <th class="text-center" scope="col">
-              Ticker
-            </th>
-            <th class="text-center" scope="col">
-              Buy/Sell
-            </th>
-            <th class="text-center" scope="col">
-              Price
-            </th>
-            <th class="text-center" scope="col">
-              Quantity
-            </th>
-            <th class="text-center" scope="col">
-              Status
-            </th>
-            <th class="text-center" scope="col">
-              sell or buy
-            </th>
-          </tr>
-          {result.map((order, index) => <Order key={index} order={order} user={this.props.user} />)}
-        </table>
-      </div>
-    );
-  }
-}
-
 class Home extends Component {
   constructor(props) {
     super(props);
     this.updateOrder = this.updateOrder.bind(this);
-    this.handleClick = this.handleClick.bind(this);
+    this.handleClickDisplay = this.handleClickDisplay.bind(this);
     this.handleMessage = this.handleMessage.bind(this);
     this.state = {
       result: [],
@@ -157,11 +105,12 @@ class Home extends Component {
     socket.emit('added order', data);
   }
 
-  handleClick(params) {
+  handleClickDisplay(params) {
     this.setState({displayadd: params});
   }
 
   render() {
+    const {classes} = this.props;
     return (
       <div>
         <div>
@@ -169,13 +118,14 @@ class Home extends Component {
           {this.state.displayadd ? (
             <NewOrder
               user={this.props.user}
-              displayOrd={this.handleClick}
+              displayOrd={this.handleClickDisplay}
               display={this.state.displayadd}
               update={this.updateOrder}
             />
           ) : (
-            <AllOrders result={this.state.result} user={this.props.user} />
+            ''
           )}
+          {this.state.result.length > 0 && <Orders result={this.state.result} user={this.props.user} />}
         </div>
         {this.props.loggedin && (
           <button onClick={() => this.handleChat(!this.state.displaychat)}>Display chat room</button>
@@ -196,7 +146,15 @@ class Home extends Component {
         <div>
           {this.props.loggedin && (
             <div>
-              <button onClick={() => this.handleClick(!this.state.displayadd)}>Add order</button>
+              <Button
+                variant="extendedFab"
+                aria-label="Delete"
+                className={classes.button}
+                onClick={() => this.handleClickDisplay(!this.state.displayadd)}
+              >
+                <NavigationIcon className={classes.extendedIcon} />
+                Add order
+              </Button>
               <MyOrders user={this.props.user} result={this.state.result} />
             </div>
           )}
@@ -206,4 +164,76 @@ class Home extends Component {
   }
 }
 
-export default Home;
+Home.propTypes = {
+  classes: PropTypes.object.isRequired
+};
+
+export default withStyles(styles)(Home);
+
+// class AllOrders extends Component {
+//   render() {
+//     const result = this.props.result.filter((c) => c.orderstatus == 'active' && c.user_id != this.props.user);
+//     return (
+//       <div>
+//         <table>
+//           <tr>
+//             <th class="text-center" scope="col">
+//               Ticker
+//             </th>
+//             <th class="text-center" scope="col">
+//               Buy/Sell
+//             </th>
+//             <th class="text-center" scope="col">
+//               Price
+//             </th>
+//             <th class="text-center" scope="col">
+//               Quantity
+//             </th>
+//             <th class="text-center" scope="col">
+//               Status
+//             </th>
+//             <th class="text-center" scope="col">
+//               sell or buy
+//             </th>
+//           </tr>
+//           {result.map((order, index) => <Order key={index} order={order} user={this.props.user} />)}
+//         </table>
+//       </div>
+//     );
+//   }
+// }
+
+// class MyOrders extends Component {
+//   render() {
+//     console.log('props for myorders: ', this.props);
+//     const result = this.props.result.filter((c) => c.user_id === parseInt(this.props.user));
+//     console.log('results of filtering', result);
+//     return (
+//       <div>
+//         <table>
+//           <tr>
+//             <th class="text-center" scope="col">
+//               Ticker
+//             </th>
+//             <th class="text-center" scope="col">
+//               Buy/Sell
+//             </th>
+//             <th class="text-center" scope="col">
+//               Price
+//             </th>
+//             <th class="text-center" scope="col">
+//               Quantity
+//             </th>
+//             <th class="text-center" scope="col">
+//               Status
+//             </th>
+//             <th class="text-center" scope="col">
+//               sell or buy
+//             </th>
+//           </tr>
+//           {result.map((order, index) => <Order key={index} order={order} user={this.props.user} />)}
+//         </table>
+//       </div>
+//     );
+//   }
+// }

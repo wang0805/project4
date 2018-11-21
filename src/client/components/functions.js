@@ -15,4 +15,4 @@ const socketfuncs = {
 };
 
 // export {addOrder, otherfunctions};
-module.exports = socketfuncs;
+module.exports = socketfuncs; //es5 syntax
