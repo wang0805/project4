@@ -71,15 +71,6 @@ class Login extends Component {
     };
     console.log(data);
 
-    // axios
-    //   .post(`http://localhost:3000/users/login`, data)
-    //   .then(() => {
-    //     console.log("worked");
-    //   })
-    //   .catch(function(error) {
-    //     console.log(error);
-    //   });
-
     fetch('/users/login', {
       method: 'POST',
       headers: {
@@ -92,7 +83,7 @@ class Login extends Component {
       var cookiesObj = this.readCookie(document.cookie);
       if (cookiesObj.logged_in) {
         this.props.setLogin(true);
-        this.props.setUser(cookiesObj[' user_id']);
+        this.props.setUser(parseInt(cookiesObj[' user_id']));
         this.props.setUsername(cookiesObj[' username']);
         this.props.history.push('/home');
       }

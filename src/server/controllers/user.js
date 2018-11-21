@@ -37,7 +37,6 @@ module.exports = (db) => {
           response.cookie('logged_in', sha256(SALT + user_id));
           response.cookie('username', request.body.name);
           response.cookie('user_id', user_id);
-          // response.status(200).redirect(`/users/${user_id}`);
           console.log('successful logged in');
           response.send('logged in successfully');
         } else {

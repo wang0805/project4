@@ -50,7 +50,7 @@ process.on('uncaughtException', onUnhandledError);
  * ===================================
  */
 
-app.use(logger.expressMiddleware);
+// app.use(logger.expressMiddleware);
 
 // This sets up routes other than the root routes. E.g. products the data needed for react components.
 require('./routes')(app, db);

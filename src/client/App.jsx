@@ -6,20 +6,29 @@ import Signup from './components/signup';
 import Navbar from './components/navbar';
 import Home from './components/home';
 import NewOrder from './components/newOrder';
-
 // import Socket from './components/socket';
 
 class App extends Component {
   constructor() {
     super();
+
+    myFunction = this.useridMarker.bind(this);
     this.setLogin = this.setLogin.bind(this);
     this.setUser = this.setUser.bind(this);
     this.setUsername = this.setUsername.bind(this);
     this.state = {
       loggedIn: false,
       user: '',
-      username: ''
+      username: '',
+      idMarker: null
     };
+  }
+
+  useridMarker(event) {
+    // var user_id = event.target.dataset.foo; -> get userid of marker
+    this.setState({idMarker: parseInt(event.target.dataset.foo)});
+    console.log('user marker u clicking ~~~~', event.target.dataset.foo);
+    //debugger;
   }
 
   setLogin(params) {
@@ -50,7 +59,12 @@ class App extends Component {
             <Route
               path="/home"
               render={() => (
-                <Home loggedin={this.state.loggedIn} user={this.state.user} username={this.state.username} />
+                <Home
+                  loggedin={this.state.loggedIn}
+                  user={this.state.user}
+                  username={this.state.username}
+                  idMarker={this.state.idMarker}
+                />
               )}
             />
             <Route

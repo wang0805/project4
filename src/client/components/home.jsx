@@ -19,9 +19,9 @@ class Order extends Component {
         <td className="orderstatus text-center">{this.props.order.orderstatus}</td>
         {this.props.order.user_id !== parseInt(this.props.user) ? (
           this.props.order.ordertype === 'B' ? (
-            <td>Sell*</td>
+            <td>Sell*change</td>
           ) : (
-            <td>Buy*</td>
+            <td>Buy*change</td>
           )
         ) : (
           <td />
@@ -105,19 +105,15 @@ class Home extends Component {
     super(props);
     this.updateOrder = this.updateOrder.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.setMsg = this.setMsg.bind(this);
+    this.handleMessage = this.handleMessage.bind(this);
     this.state = {
       result: [],
       displayadd: false,
       displaychat: false,
-      message: '',
       messages: []
     };
   }
 
-  setMsg(params) {
-    this.setState({message: params});
-  }
   setMsgs(params) {
     this.setState({messages: [...this.state.messages, params]});
   }
@@ -142,15 +138,24 @@ class Home extends Component {
     const socket = socketIOClient('http://127.0.0.1:3000/');
     socket.on('added order', (data) => {
       if (data.addOrder === true) {
-        console.log(data);
-        console.log('testing socket from sockets');
+        console.log('testing if orders live updating works ~~~~~~~');
         fetch('api/orders')
           .then((res) => res.json())
           .then((resultrows) => this.setState({result: resultrows}, () => console.log('result of fetch:', resultrows)));
+      } else if (data.message === true) {
+        console.log('display the messages from chat pls ~~~~~~~');
+        this.setState({messages: [...this.state.messages, data]});
+        this.setState({displaychat: false});
+        this.setState({displaychat: true});
       } else {
-        console.log('nothing yet');
+        console.log('nothing here to see ~~~~~');
       }
     });
+  }
+
+  handleMessage(data) {
+    const socket = socketIOClient('http://127.0.0.1:3000/');
+    socket.emit('added order', data);
   }
 
   handleClick(params) {
@@ -176,7 +181,18 @@ class Home extends Component {
         {this.props.loggedin && (
           <button onClick={() => this.handleChat(!this.state.displaychat)}>Display chat room</button>
         )}
-        {this.state.displaychat ? <Chatroom username={this.props.username} user={this.props.user} /> : ''}
+        {this.state.displaychat ? (
+          <Chatroom
+            username={this.props.username}
+            user={this.props.user}
+            idMarker={this.props.idMarker}
+            messages={this.state.messages}
+            setMsgs={this.state.setMsgs}
+            handleMessage={this.handleMessage}
+          />
+        ) : (
+          ''
+        )}
         <div>This are all your orders :)</div>
         <div>
           {this.props.loggedin && (
