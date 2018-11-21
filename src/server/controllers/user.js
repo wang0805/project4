@@ -33,7 +33,6 @@ module.exports = (db) => {
         console.error('Query error', error);
       } else if (result.rows[0] != undefined) {
         let user_id = result.rows[0].id;
-
         if (sha256(request.body.password) === result.rows[0].password) {
           response.cookie('logged_in', sha256(SALT + user_id));
           response.cookie('username', request.body.name);

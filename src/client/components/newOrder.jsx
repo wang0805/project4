@@ -90,9 +90,10 @@ class NewOrder extends Component {
       var autocomplete = new google.maps.places.Autocomplete(input, options);
       google.maps.event.addListener(autocomplete, 'place_changed', function() {
         var place = autocomplete.getPlace();
+        console.log('places to be', place);
         var lat = place.geometry.location.lat();
         var lng = place.geometry.location.lng();
-        reactThis.setState({meet_lat: lat, meet_long: lng}); //set the lat and long for submit
+        reactThis.setState({meet_lat: lat, meet_long: lng, meet_address: place.formatted_address}); //set the lat and long for submit
         document.getElementById('lat').value = lat; //test
         document.getElementById('long').value = lng; //test
       });
@@ -213,7 +214,6 @@ class NewOrder extends Component {
               variant="outlined"
               label="Meet_address"
               name="meet_address"
-              value={this.state.meet_address}
               onChange={this.handleChange}
               InputProps={{
                 startAdornment: <InputAdornment position="start">@</InputAdornment>

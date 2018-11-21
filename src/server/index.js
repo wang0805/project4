@@ -7,6 +7,8 @@ const cookieParser = require('cookie-parser');
 const db = require('./db');
 const http = require('http');
 const logger = require('./logger');
+const socketIO = require('socket.io');
+const axios = require('axios');
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 process.env.HTTP_PORT = process.env.HTTP_PORT || 3000;
@@ -65,7 +67,20 @@ setupAppRoutes(app);
  * Listen to requests on port 3000
  * ===================================
  */
-const server = app.listen(process.env.HTTP_PORT, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+
+var server = http.createServer(app);
+const io = socketIO(server);
+
+io.on('connection', (socket) => {
+  console.log('new connection from server');
+  socket.on('added order', (data) => {
+    io.sockets.emit('added order', data);
+  });
+
+  socket.on('disconnect', () => console.log('user disconnected'));
+});
+
+server.listen(process.env.HTTP_PORT, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 // Run clean up actions when server shuts down
 server.on('close', () => {
@@ -75,3 +90,40 @@ server.on('close', () => {
     console.log('Shut down db connection pool');
   });
 });
+
+// -- using set interval to update api calls -- //
+
+// let intervalcb; //initialize interval callback
+// io.on('connection', (socket) => {
+//   console.log('new connection from server');
+//   // if (intervalcb) {
+//   //   clearInterval(intervalcb);
+//   // }
+//   intervalcb = setInterval(() => getOrdersAPI(socket), 2000);
+
+//   socket.on('disconnect from server', () => console.log('user disconnected'));
+// });
+
+// const getOrdersAPI = async (socket) => {
+//   try {
+//     const response = await axios.get('http://localhost:3000/api/orders');
+//     console.log('response from axios socket call', response.data);
+//     socket.emit('APICALL', response.data);
+//   } catch (error) {
+//     console.log('error', error);
+//   }
+// };
+
+// -- simeple color changing exercise from socket.jsx client file --//
+
+// //on takes on 2 arguements; name of event and a callback function
+// io.on('connection', (socket) => {
+//   console.log('user connected');
+//   //receives data from front end, and emit to front end again
+//   socket.on('change color', (color) => {
+//     console.log('color changed to:', color);
+//     io.sockets.emit('change color', color);
+//   });
+
+//   socket.on('disconnect', () => console.log('user disconnected'));
+// });
