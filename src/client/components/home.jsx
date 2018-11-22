@@ -22,40 +22,17 @@ const styles = (theme) => ({
   }
 });
 
-class Order extends Component {
-  render() {
-    return (
-      <tr>
-        <th className="orderticker text-center" scope="row">
-          {this.props.order.ticker}
-        </th>
-        <td class="text-center">{this.props.order.ordertype}</td>
-        <td class="text-center">{this.props.order.price}</td>
-        <td class="text-center">{this.props.order.quantity}</td>
-        <td className="orderstatus text-center">{this.props.order.orderstatus}</td>
-        {this.props.order.user_id !== parseInt(this.props.user) ? (
-          this.props.order.ordertype === 'B' ? (
-            <td>Sell*change</td>
-          ) : (
-            <td>Buy*change</td>
-          )
-        ) : (
-          <td />
-        )}
-      </tr>
-    );
-  }
-}
-
 class Home extends Component {
   constructor(props) {
     super(props);
     this.updateOrder = this.updateOrder.bind(this);
     this.handleClickDisplay = this.handleClickDisplay.bind(this);
     this.handleMessage = this.handleMessage.bind(this);
+    this.handleClickClose = this.handleClickClose.bind(this);
     this.state = {
       result: [],
       displayadd: false,
+      scroll: 'paper',
       displaychat: false,
       messages: []
     };
@@ -107,7 +84,16 @@ class Home extends Component {
 
   handleClickDisplay(params) {
     this.setState({displayadd: params});
-  }
+  } // ready to remove
+
+  handleClickOpen = (scroll) => () => {
+    this.setState({displayadd: true, scroll});
+  };
+
+  handleClickClose = () => {
+    console.log('checking if close ~~~~~~~~~~~~~~~~~~~');
+    this.setState({displayadd: false});
+  };
 
   render() {
     const {classes} = this.props;
@@ -118,9 +104,9 @@ class Home extends Component {
           {this.state.displayadd ? (
             <NewOrder
               user={this.props.user}
-              displayOrd={this.handleClickDisplay}
-              display={this.state.displayadd}
+              displayClose={this.handleClickClose}
               update={this.updateOrder}
+              displayadd={this.state.displayadd}
             />
           ) : (
             ''
@@ -150,7 +136,7 @@ class Home extends Component {
                 variant="extendedFab"
                 aria-label="Delete"
                 className={classes.button}
-                onClick={() => this.handleClickDisplay(!this.state.displayadd)}
+                onClick={this.handleClickOpen(this.state.scroll)}
               >
                 <NavigationIcon className={classes.extendedIcon} />
                 Add order
@@ -234,6 +220,31 @@ export default withStyles(styles)(Home);
 //           {result.map((order, index) => <Order key={index} order={order} user={this.props.user} />)}
 //         </table>
 //       </div>
+//     );
+//   }
+// }
+
+// class Order extends Component {
+//   render() {
+//     return (
+//       <tr>
+//         <th className="orderticker text-center" scope="row">
+//           {this.props.order.ticker}
+//         </th>
+//         <td class="text-center">{this.props.order.ordertype}</td>
+//         <td class="text-center">{this.props.order.price}</td>
+//         <td class="text-center">{this.props.order.quantity}</td>
+//         <td className="orderstatus text-center">{this.props.order.orderstatus}</td>
+//         {this.props.order.user_id !== parseInt(this.props.user) ? (
+//           this.props.order.ordertype === 'B' ? (
+//             <td>Sell*change</td>
+//           ) : (
+//             <td>Buy*change</td>
+//           )
+//         ) : (
+//           <td />
+//         )}
+//       </tr>
 //     );
 //   }
 // }

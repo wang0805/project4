@@ -37,28 +37,6 @@ class Map extends Component {
     return this.googleMapsPromise;
   }
 
-  // createMarker(data, map) {
-  //   var myLatLng = new google.maps.LatLng(data.meet_lat, data.meet_long);
-  //   var marker = new google.maps.Marker({
-  //     position: myLatLng,
-  //     map: map,
-  //     animation: google.maps.Animation.DROP
-  //     // icon: data.icon, //add icon inside results
-  //     // title: data.title
-  //   });
-  //   var infowindow = new google.maps.InfoWindow();
-  //   google.maps.event.addListener(marker, 'click', function() {
-  //     infowindow.setContent('testing');
-  //     // console.log(place.geometry.location.lat());
-  //     infowindow.open(map, this);
-  //     marker.setAnimation(google.maps.Animation.BOUNCE);
-  //     setTimeout(function() {
-  //       marker.setAnimation(null);
-  //     }, 2000);
-  //   });
-  //   return marker;
-  // }
-
   componentWillMount() {
     this.getGoogleMaps();
   }

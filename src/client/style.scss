@@ -2,5 +2,10 @@ html,
 body {
   background-color: white;
   min-width: 700px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+//make autocomplete field appear
+.pac-container {
+  z-index: 9000;
 }

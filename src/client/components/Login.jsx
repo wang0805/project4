@@ -44,6 +44,7 @@ class Login extends Component {
     };
   }
 
+  //helper function to parse cookies from res.cookies
   readCookie(cookies) {
     var obj = {};
     var array = cookies.split(';');
@@ -85,7 +86,7 @@ class Login extends Component {
         this.props.setLogin(true);
         this.props.setUser(parseInt(cookiesObj[' user_id']));
         this.props.setUsername(cookiesObj[' username']);
-        this.props.history.push('/home');
+        this.props.history.push('/home'); //props are inherent from router
       }
     });
   }

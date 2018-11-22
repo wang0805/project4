@@ -11,6 +11,12 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const styles = (theme) => ({
   formControl: {
@@ -32,7 +38,6 @@ class NewOrder extends Component {
     super();
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.test = this.test.bind(this);
     this.state = {
       ticker: '',
       ordertype: 'B',
@@ -82,20 +87,30 @@ class NewOrder extends Component {
     let number = parseInt(this.props.user);
     this.setState({user_id: number});
     this.getGoogleMaps().then((google) => {
+      const sg = {lat: 1.3521, lng: 103.8198};
+      const map = new google.maps.Map(document.getElementById('smap'), {
+        zoom: 10,
+        center: sg
+      });
       //autocomplete function
       var input = document.getElementById('searchTextField');
       var options = {
         componentRestrictions: {country: 'sg'}
       };
       var autocomplete = new google.maps.places.Autocomplete(input, options);
-      google.maps.event.addListener(autocomplete, 'place_changed', function() {
+      autocomplete.addListener('place_changed', function() {
         var place = autocomplete.getPlace();
-        console.log('places to be', place);
         var lat = place.geometry.location.lat();
         var lng = place.geometry.location.lng();
         reactThis.setState({meet_lat: lat, meet_long: lng, meet_address: place.formatted_address}); //set the lat and long for submit
-        document.getElementById('lat').value = lat; //test
-        document.getElementById('long').value = lng; //test
+        document.getElementById('lat').value = lat;
+        document.getElementById('long').value = lng;
+
+        let latLng = {lat: parseFloat(lat), lng: parseFloat(lng)};
+        var marker = new google.maps.Marker({
+          position: latLng,
+          map: map
+        });
       });
     });
   }
@@ -122,7 +137,6 @@ class NewOrder extends Component {
       available_till: this.state.available_till,
       user_id: this.state.user_id
     };
-    console.log(data);
 
     fetch('/order/new', {
       method: 'POST',
@@ -133,116 +147,133 @@ class NewOrder extends Component {
       body: JSON.stringify(data)
     }).then(() => {
       console.log('this is a success!!');
-      this.props.displayOrd(false);
+      this.props.displayClose();
       this.props.update();
-      // this.props.history.push("/home"); //not pushing bcos the url is diff
     });
   }
 
-  test() {
-    console.log(this.state);
-  }
-
   render() {
-    console.log(this.props.user);
     const {classes} = this.props;
 
     return (
-      <div className={classes.root}>
-        <button onClick={this.test}>TEST</button>
-        <form onSubmit={this.handleSubmit}>
-          <FormControl className={classes.formControl} variant="outlined">
-            <TextField
-              id="outlined-adornment-amount"
-              className={classNames(classes.margin, classes.textField)}
-              variant="outlined"
-              label="Ticker"
-              name="ticker"
-              value={this.state.ticker}
-              onChange={this.handleChange}
-              InputProps={{
-                startAdornment: <InputAdornment position="start">@</InputAdornment>
-              }}
-            />
-          </FormControl>
-          <FormControl component="fieldset" className={classes.formControl}>
-            <FormLabel component="legend">Buy/Sell</FormLabel>
-            <RadioGroup
-              aria-label="Ordertype"
-              name="ordertype"
-              className={classes.group}
-              value={this.state.ordertype}
-              onChange={this.handleChange}
-            >
-              <FormControlLabel value="B" control={<Radio />} label="Buy" />
-              <FormControlLabel value="S" control={<Radio />} label="Sell" />
-            </RadioGroup>
-          </FormControl>
-          <FormControl className={classes.formControl} variant="outlined">
-            <TextField
-              id="outlined-adornment-amount"
-              className={classNames(classes.margin, classes.textField)}
-              variant="outlined"
-              label="Price"
-              name="price"
-              value={this.state.price}
-              onChange={this.handleChange}
-              InputProps={{
-                startAdornment: <InputAdornment position="start">$</InputAdornment>
-              }}
-            />
-          </FormControl>
-          <FormControl className={classes.formControl} variant="outlined">
-            <TextField
-              id="outlined-adornment-amount"
-              className={classNames(classes.margin, classes.textField)}
-              variant="outlined"
-              label="Quantity"
-              name="quantity"
-              value={this.state.quantity}
-              onChange={this.handleChange}
-              InputProps={{
-                startAdornment: <InputAdornment position="start">Qty</InputAdornment>
-              }}
-            />
-          </FormControl>
-          <FormControl className={classes.formControl} variant="outlined">
-            <TextField
-              // id="outlined-adornment-amount"
-              id="searchTextField"
-              className={classNames(classes.margin, classes.textField)}
-              variant="outlined"
-              label="Meet_address"
-              name="meet_address"
-              onChange={this.handleChange}
-              InputProps={{
-                startAdornment: <InputAdornment position="start">@</InputAdornment>
-              }}
-            />
-          </FormControl>
-
-          <input id="lat" />
-          <input id="long" />
-
-          <formControl>
-            <form className={classes.container} noValidate>
+      <div>
+        <Dialog
+          open={this.props.displayadd}
+          onClose={this.props.displayClose}
+          scroll="paper"
+          aria-labelledby="scroll-dialog-title"
+        >
+          <form onSubmit={this.handleSubmit}>
+            <DialogTitle id="scroll-dialog-title">Enter Order</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Disclaimers: enter order that would be shown to other users on the map and would allow them to click on
+                the map marker to chat to you
+              </DialogContentText>
+              <br />
               <TextField
-                id="date"
-                label="Available till"
-                type="date"
-                name="available_till"
-                value={this.state.available_till}
+                id="outlined-adornment-amount"
+                className={classNames(classes.margin, classes.textField)}
+                variant="outlined"
+                label="Ticker"
+                name="ticker"
+                value={this.state.ticker}
                 onChange={this.handleChange}
-                className={classes.textField}
-                InputLabelProps={{
-                  shrink: true
+                InputProps={{
+                  startAdornment: <InputAdornment position="start">T</InputAdornment>
                 }}
+                fullWidth
               />
-            </form>
-          </formControl>
+              <br />
+              <br />
+              <TextField
+                id="outlined-adornment-amount"
+                className={classNames(classes.margin, classes.textField)}
+                variant="outlined"
+                label="Price"
+                name="price"
+                value={this.state.price}
+                onChange={this.handleChange}
+                InputProps={{
+                  startAdornment: <InputAdornment position="start">$</InputAdornment>
+                }}
+                fullWidth
+              />
+              <br />
+              <br />
+              <TextField
+                id="outlined-adornment-amount"
+                className={classNames(classes.margin, classes.textField)}
+                variant="outlined"
+                label="Quantity"
+                name="quantity"
+                value={this.state.quantity}
+                onChange={this.handleChange}
+                InputProps={{
+                  startAdornment: <InputAdornment position="start">Q</InputAdornment>
+                }}
+                fullWidth
+              />
+              <br />
+              <br />
+              <TextField
+                // id="outlined-adornment-amount"
+                id="searchTextField" //autocomplete
+                className={classNames(classes.margin, classes.textField)}
+                variant="outlined"
+                label="Meet_address"
+                name="meet_address"
+                onChange={this.handleChange}
+                InputProps={{
+                  startAdornment: <InputAdornment position="start">@</InputAdornment>
+                }}
+                fullWidth
+              />
+              <br />
+              <input id="lat" type="hidden" />
+              <input id="long" type="hidden" />
+              <br />
+              <form className={classes.container} noValidate>
+                <TextField
+                  id="date"
+                  label="Available till"
+                  type="date"
+                  name="available_till"
+                  value={this.state.available_till}
+                  onChange={this.handleChange}
+                  className={classes.textField}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </form>
+              <br />
+              <FormControl component="fieldset" className={classes.formControl}>
+                <FormLabel component="legend">Buy/Sell</FormLabel>
+                <RadioGroup
+                  aria-label="Ordertype"
+                  name="ordertype"
+                  className={classes.group}
+                  value={this.state.ordertype}
+                  onChange={this.handleChange}
+                >
+                  <FormControlLabel value="B" control={<Radio />} label="Buy" />
+                  <FormControlLabel value="S" control={<Radio />} label="Sell" />
+                </RadioGroup>
+              </FormControl>
 
-          <input type="submit" value="submit" />
-        </form>
+              <div style={{width: '100%%', height: 200}} id="smap" />
+            </DialogContent>
+            <DialogActions>
+              <Button type="submit" color="primary">
+                Confirm Order
+              </Button>
+              <Button onClick={this.props.displayClose} color="primary">
+                Cancel
+              </Button>
+            </DialogActions>
+          </form>
+        </Dialog>
       </div>
     );
   }
