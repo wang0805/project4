@@ -304,7 +304,6 @@ class Orders extends React.Component {
                       <TableCell numeric>{n.price}</TableCell>
                       <TableCell numeric>{n.quantity}</TableCell>
                       <TableCell>{n.orderstatus}</TableCell>
-                      <TableCell> Cancel </TableCell>
                       {n.user_id !== this.props.user ? (
                         n.ordertype === 'B' ? (
                           <TableCell>Sell --></TableCell>

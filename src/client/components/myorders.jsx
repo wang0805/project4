@@ -147,7 +147,7 @@ let TableToolbar = (props) => {
           </Typography>
         ) : (
           <Typography variant="h6" id="tableTitle">
-            Orders
+            My Orders
           </Typography>
         )}
       </div>

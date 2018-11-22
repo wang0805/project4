@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {withRouter, Link} from 'react-router-dom';
-import Axios from 'axios';
 
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -9,11 +8,11 @@ import IconButton from '@material-ui/core/IconButton';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
 
 const styles = (theme) => ({
   root: {
@@ -27,6 +26,9 @@ const styles = (theme) => ({
   },
   textField: {
     flexBasis: 200
+  },
+  button: {
+    margin: theme.spacing.unit
   }
 });
 
@@ -93,53 +95,58 @@ class Login extends Component {
 
   render() {
     const {classes} = this.props;
-    console.log(this.props);
+
     return (
       <div className={classes.root}>
         <form onSubmit={this.handleSubmit}>
           <Grid container spacing={24}>
             <Grid item xs={12}>
-              <FormControl
-                className={classNames(classes.margin, classes.withoutLabel, classes.textField)}
-                aria-describedby="name-helper-text"
-              >
-                <Input
-                  id="adornment-weight"
-                  name="name"
-                  onChange={this.handleChange}
-                  inputProps={{
-                    'aria-label': 'Name'
-                  }}
-                />
-                <FormHelperText id="name-helper-text">Name</FormHelperText>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl className={classNames(classes.margin, classes.textField)}>
-                <InputLabel htmlFor="adornment-password">Password</InputLabel>
-                <Input
-                  id="adornment-password"
-                  type={this.state.showPassword ? 'text' : 'password'}
-                  name="password"
-                  onChange={this.handleChange}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton aria-label="Toggle password visibility" onClick={this.handleClickShowPassword}>
-                        {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                />
-              </FormControl>
-              <FormControl>
-                <input type="submit" value="submit" />
-              </FormControl>
+              <Grid container direction="column" justify="center" alignItems="center">
+                <Grid item>
+                  <FormControl className={classNames(classes.margin, classes.textField)}>
+                    <InputLabel htmlFor="adornment-password">Username</InputLabel>
+                    <Input
+                      id="adornment-password"
+                      name="name"
+                      inputProps={{
+                        'aria-label': 'Name'
+                      }}
+                      onChange={this.handleChange}
+                    />
+                  </FormControl>
+                </Grid>
+                <Grid item>
+                  <FormControl className={classNames(classes.margin, classes.textField)}>
+                    <InputLabel htmlFor="adornment-password">Password</InputLabel>
+                    <Input
+                      id="adornment-password"
+                      type={this.state.showPassword ? 'text' : 'password'}
+                      name="password"
+                      onChange={this.handleChange}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton aria-label="Toggle password visibility" onClick={this.handleClickShowPassword}>
+                            {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                    />
+                  </FormControl>
+                </Grid>
+                <br />
+                <Grid item>
+                  <Button type="submit" variant="contained" color="primary" className={classes.button}>
+                    Submit
+                  </Button>
+                </Grid>
+                <br />
+                <Grid item>
+                  <Link to="/signup">Signup</Link>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </form>
-        <div>
-          <Link to="/signup">Signup</Link>
-        </div>
       </div>
     );
   }

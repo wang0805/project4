@@ -12,6 +12,8 @@ import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import NavigationIcon from '@material-ui/icons/Navigation';
+import Grid from '@material-ui/core/Grid';
+import MUIDataTable from 'mui-datatables';
 
 const styles = (theme) => ({
   button: {
@@ -19,6 +21,9 @@ const styles = (theme) => ({
   },
   extendedIcon: {
     marginRight: theme.spacing.unit
+  },
+  root: {
+    flexGrow: 1
   }
 });
 
@@ -52,8 +57,25 @@ class Home extends Component {
       .then((resultrows) => this.setState({result: resultrows}, () => console.log('result of fetch:', resultrows)));
   }
 
+  readCookie(cookies) {
+    var obj = {};
+    var array = cookies.split(';');
+    for (let i = 0; i < array.length; i++) {
+      var newArr = array[i].split('=');
+      obj[newArr[0]] = newArr[1];
+    }
+    return obj;
+  }
+
   componentDidMount() {
     this.updateOrder();
+    //if cookies not cleared - allow user to remain logged in if refresh
+    var cookiesObj = this.readCookie(document.cookie);
+    if (cookiesObj.logged_in) {
+      this.props.setLogin(true);
+      this.props.setUser(parseInt(cookiesObj[' user_id']));
+      this.props.setUsername(cookiesObj[' username']);
+    }
     // -- set interval call from socket -- //
     // const {endpoint} = this.state;
     // const socket = socketIOClient(endpoint);
@@ -69,8 +91,6 @@ class Home extends Component {
       } else if (data.message === true) {
         console.log('display the messages from chat pls ~~~~~~~');
         this.setState({messages: [...this.state.messages, data]});
-        this.setState({displaychat: false});
-        this.setState({displaychat: true});
       } else {
         console.log('nothing here to see ~~~~~');
       }
@@ -97,10 +117,38 @@ class Home extends Component {
 
   render() {
     const {classes} = this.props;
+
+    //MUI theme
+    const columns = ['ticker', 'Buy/Sell', 'price', 'quantity', 'orderstatus', 'action'];
+    const options = {
+      filterType: 'checkbox'
+    };
+    let newArry = []; //get array of data in array format for MUI theme
+    const result = this.state.result.filter((c) => c.orderstatus === 'active' && c.user_id != this.props.user);
+    result.map((obj, index) => {
+      let arr = [];
+      arr.push(obj.ticker);
+      arr.push(obj.ordertype);
+      arr.push(obj.price);
+      arr.push(obj.quantity);
+      arr.push(obj.orderstatus);
+      if (obj.ordertype === 'B') {
+        arr.push('Sell -->');
+      } else if (obj.ordertype === 'S') {
+        arr.push('Buy -->');
+      }
+      newArry.push(arr);
+    });
+
     return (
-      <div>
-        <div>
-          {this.state.result.length > 0 && <Map result={this.state.result} />}
+      <div className={classes.root}>
+        <Grid container spacing={32}>
+          {this.state.result.length > 0 && (
+            <Grid item xs={12}>
+              <Map result={this.state.result} />
+            </Grid>
+          )}
+
           {this.state.displayadd ? (
             <NewOrder
               user={this.props.user}
@@ -111,40 +159,53 @@ class Home extends Component {
           ) : (
             ''
           )}
-          {this.state.result.length > 0 && <Orders result={this.state.result} user={this.props.user} />}
-        </div>
-        {this.props.loggedin && (
-          <button onClick={() => this.handleChat(!this.state.displaychat)}>Display chat room</button>
-        )}
-        {this.state.displaychat ? (
-          <Chatroom
-            username={this.props.username}
-            user={this.props.user}
-            idMarker={this.props.idMarker}
-            messages={this.state.messages}
-            setMsgs={this.state.setMsgs}
-            handleMessage={this.handleMessage}
-          />
-        ) : (
-          ''
-        )}
-        <div>This are all your orders :)</div>
-        <div>
-          {this.props.loggedin && (
-            <div>
-              <Button
-                variant="extendedFab"
-                aria-label="Delete"
-                className={classes.button}
-                onClick={this.handleClickOpen(this.state.scroll)}
-              >
-                <NavigationIcon className={classes.extendedIcon} />
-                Add order
-              </Button>
-              <MyOrders user={this.props.user} result={this.state.result} />
-            </div>
+
+          {this.state.result.length > 0 && (
+            <Grid item xs={12} sm={8}>
+              {/* <Orders result={this.state.result} user={this.props.user} /> */}
+              <MUIDataTable title={'All Orders'} data={newArry} columns={columns} options={options} />
+            </Grid>
           )}
-        </div>
+
+          {this.state.displaychat ? (
+            <Grid item xs={12} sm={4}>
+              <Chatroom
+                username={this.props.username}
+                user={this.props.user}
+                idMarker={this.props.idMarker}
+                messages={this.state.messages}
+                setMsgs={this.state.setMsgs}
+                handleMessage={this.handleMessage}
+              />
+            </Grid>
+          ) : (
+            <Grid item xs={12} sm={4} />
+          )}
+
+          <Grid item xs={12} sm={8}>
+            <MyOrders user={this.props.user} result={this.state.result} />
+          </Grid>
+
+          {this.props.loggedin && (
+            <button onClick={() => this.handleChat(!this.state.displaychat)}>Display chat room</button>
+          )}
+
+          <div>
+            {this.props.loggedin && (
+              <div>
+                <Button
+                  variant="extendedFab"
+                  aria-label="Delete"
+                  className={classes.button}
+                  onClick={this.handleClickOpen(this.state.scroll)}
+                >
+                  <NavigationIcon className={classes.extendedIcon} />
+                  Add order
+                </Button>
+              </div>
+            )}
+          </div>
+        </Grid>
       </div>
     );
   }

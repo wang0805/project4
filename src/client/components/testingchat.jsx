@@ -3,35 +3,11 @@ import Message from './message';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import Icon from '@material-ui/core/Icon';
-import TextField from '@material-ui/core/TextField';
 
 const styles = (theme) => ({
   root: {
     flexGrow: 1,
     marginTop: 10
-  },
-  card: {
-    width: 400,
-    height: 345,
-    overflow: 'auto',
-    marginTop: 0
-  },
-  button: {
-    margin: theme.spacing.unit
-  },
-  rightIcon: {
-    marginLeft: theme.spacing.unit
-  },
-  iconSmall: {
-    fontSize: 10
   }
 });
 
@@ -43,13 +19,12 @@ class Chatroom extends Component {
       receiver: null,
       messages: [],
       input: '',
-      styles: {display: 'inline-block'}
+      styles: {marginTop: '19px'}
     };
     this.handleClick = this.handleClick.bind(this);
     this.setMsg = this.setMsg.bind(this);
   }
 
-  //check parent component if state is being updated
   componentDidUpdate(prevProps) {
     if (this.props.messages != prevProps.messages) {
       this.setState({
@@ -84,35 +59,25 @@ class Chatroom extends Component {
   }
   render() {
     const {classes} = this.props;
-
     let msg = this.state.messages.map((message, index) => {
       if (this.props.user === message.to || this.props.user === message.from) {
         return (
-          <Typography component="p">
+          <Grid item xs={12} key={index}>
             <Message message={message.content} to={message.to} from={message.from} />
-          </Typography>
+          </Grid>
         );
       }
     });
     return (
-      <Grid container direction="column" justify="center" alignItems="center">
-        <Card className={classes.card}>
-          <CardActionArea>
-            <CardContent>
-              <Typography gutterBottom variant="h6" component="h2">
-                Chatroom
-              </Typography>
-              {msg}
-            </CardContent>
-          </CardActionArea>
-          <CardActions>
-            <form onSubmit={this.handleClick}>
-              <input style={this.state.styles} value={this.state.input} onChange={this.setMsg} />
-              <button type="submit">Submit</button>
-            </form>
-          </CardActions>
-        </Card>
-      </Grid>
+      <div className={classes.root}>
+        <Grid item xs={12}>
+          <form onSubmit={this.handleClick}>
+            <input style={this.state.styles} value={this.state.input} onChange={this.setMsg} />
+            <button type="submit">Submit</button>
+          </form>
+        </Grid>
+        {msg}
+      </div>
     );
   }
 }
