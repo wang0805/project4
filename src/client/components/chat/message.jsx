@@ -4,7 +4,8 @@ class Message extends Component {
   render() {
     return (
       <div>
-        {this.props.to} {this.props.from} {this.props.message}
+        <strong>To: </strong> {this.props.to} <strong>From: </strong> {this.props.fromUser} <strong>Text: </strong>
+        {this.props.message}
       </div>
     );
   }

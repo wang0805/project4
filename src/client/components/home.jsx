@@ -7,6 +7,7 @@ import Chatroom from './chat/chatroom';
 // import {socketfuncs} from './functions'; //if using helper functions
 import Orders from './orders';
 import MyOrders from './myorders';
+import CurrentPrice from './currentPrice';
 //material ui
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
@@ -111,7 +112,7 @@ class Home extends Component {
   };
 
   handleClickClose = () => {
-    console.log('checking if close ~~~~~~~~~~~~~~~~~~~');
+    console.log('checking if display add order is closed ~~~~~~~~~~~~~~~~~~~');
     this.setState({displayadd: false});
   };
 
@@ -119,7 +120,7 @@ class Home extends Component {
     const {classes} = this.props;
 
     //MUI theme
-    const columns = ['ticker', 'Buy/Sell', 'price', 'quantity', 'orderstatus', 'action'];
+    const columns = ['ticker', 'Buy/Sell', 'quantity', 'orderstatus', 'action'];
     const options = {
       filterType: 'checkbox'
     };
@@ -129,7 +130,6 @@ class Home extends Component {
       let arr = [];
       arr.push(obj.ticker);
       arr.push(obj.ordertype);
-      arr.push(obj.price);
       arr.push(obj.quantity);
       arr.push(obj.orderstatus);
       if (obj.ordertype === 'B') {
@@ -149,26 +149,59 @@ class Home extends Component {
             </Grid>
           )}
 
-          {this.state.displayadd ? (
+          {/* this is a open dialog box so doesnt matter where it is */}
+          {this.state.displayadd && (
             <NewOrder
               user={this.props.user}
               displayClose={this.handleClickClose}
               update={this.updateOrder}
               displayadd={this.state.displayadd}
             />
-          ) : (
-            ''
           )}
-
           {this.state.result.length > 0 && (
             <Grid item xs={12} sm={8}>
               {/* <Orders result={this.state.result} user={this.props.user} /> */}
               <MUIDataTable title={'All Orders'} data={newArry} columns={columns} options={options} />
+
+              <MyOrders user={this.props.user} result={this.state.result} updateOrder={this.updateOrder} />
             </Grid>
           )}
-
-          {this.state.displaychat ? (
-            <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={4}>
+            <Grid container direction="row" justify="space-evenly" alignItems="center">
+              <Grid item>
+                <div>
+                  {this.props.loggedin && (
+                    <Button
+                      variant="extendedFab"
+                      aria-label="Delete"
+                      className={classes.button}
+                      onClick={this.handleClickOpen(this.state.scroll)}
+                    >
+                      <NavigationIcon className={classes.extendedIcon} />
+                      Add order
+                    </Button>
+                  )}
+                </div>
+              </Grid>
+              <Grid item>
+                <div>
+                  {this.props.loggedin && (
+                    <Button
+                      variant="extendedFab"
+                      aria-label="Delete"
+                      className={classes.button}
+                      onClick={() => this.handleChat(!this.state.displaychat)}
+                    >
+                      <NavigationIcon className={classes.extendedIcon} />
+                      Display Chatroom
+                    </Button>
+                  )}
+                </div>
+              </Grid>
+            </Grid>
+            <br />
+            <br />
+            {this.state.displaychat ? (
               <Chatroom
                 username={this.props.username}
                 user={this.props.user}
@@ -177,34 +210,14 @@ class Home extends Component {
                 setMsgs={this.state.setMsgs}
                 handleMessage={this.handleMessage}
               />
-            </Grid>
-          ) : (
-            <Grid item xs={12} sm={4} />
-          )}
-
-          <Grid item xs={12} sm={8}>
-            <MyOrders user={this.props.user} result={this.state.result} />
-          </Grid>
-
-          {this.props.loggedin && (
-            <button onClick={() => this.handleChat(!this.state.displaychat)}>Display chat room</button>
-          )}
-
-          <div>
-            {this.props.loggedin && (
-              <div>
-                <Button
-                  variant="extendedFab"
-                  aria-label="Delete"
-                  className={classes.button}
-                  onClick={this.handleClickOpen(this.state.scroll)}
-                >
-                  <NavigationIcon className={classes.extendedIcon} />
-                  Add order
-                </Button>
-              </div>
+            ) : (
+              <Grid container direction="column" justify="space-evenly" alignItems="center">
+                <Grid item>
+                  <CurrentPrice />
+                </Grid>
+              </Grid>
             )}
-          </div>
+          </Grid>
         </Grid>
       </div>
     );
@@ -216,96 +229,3 @@ Home.propTypes = {
 };
 
 export default withStyles(styles)(Home);
-
-// class AllOrders extends Component {
-//   render() {
-//     const result = this.props.result.filter((c) => c.orderstatus == 'active' && c.user_id != this.props.user);
-//     return (
-//       <div>
-//         <table>
-//           <tr>
-//             <th class="text-center" scope="col">
-//               Ticker
-//             </th>
-//             <th class="text-center" scope="col">
-//               Buy/Sell
-//             </th>
-//             <th class="text-center" scope="col">
-//               Price
-//             </th>
-//             <th class="text-center" scope="col">
-//               Quantity
-//             </th>
-//             <th class="text-center" scope="col">
-//               Status
-//             </th>
-//             <th class="text-center" scope="col">
-//               sell or buy
-//             </th>
-//           </tr>
-//           {result.map((order, index) => <Order key={index} order={order} user={this.props.user} />)}
-//         </table>
-//       </div>
-//     );
-//   }
-// }
-
-// class MyOrders extends Component {
-//   render() {
-//     console.log('props for myorders: ', this.props);
-//     const result = this.props.result.filter((c) => c.user_id === parseInt(this.props.user));
-//     console.log('results of filtering', result);
-//     return (
-//       <div>
-//         <table>
-//           <tr>
-//             <th class="text-center" scope="col">
-//               Ticker
-//             </th>
-//             <th class="text-center" scope="col">
-//               Buy/Sell
-//             </th>
-//             <th class="text-center" scope="col">
-//               Price
-//             </th>
-//             <th class="text-center" scope="col">
-//               Quantity
-//             </th>
-//             <th class="text-center" scope="col">
-//               Status
-//             </th>
-//             <th class="text-center" scope="col">
-//               sell or buy
-//             </th>
-//           </tr>
-//           {result.map((order, index) => <Order key={index} order={order} user={this.props.user} />)}
-//         </table>
-//       </div>
-//     );
-//   }
-// }
-
-// class Order extends Component {
-//   render() {
-//     return (
-//       <tr>
-//         <th className="orderticker text-center" scope="row">
-//           {this.props.order.ticker}
-//         </th>
-//         <td class="text-center">{this.props.order.ordertype}</td>
-//         <td class="text-center">{this.props.order.price}</td>
-//         <td class="text-center">{this.props.order.quantity}</td>
-//         <td className="orderstatus text-center">{this.props.order.orderstatus}</td>
-//         {this.props.order.user_id !== parseInt(this.props.user) ? (
-//           this.props.order.ordertype === 'B' ? (
-//             <td>Sell*change</td>
-//           ) : (
-//             <td>Buy*change</td>
-//           )
-//         ) : (
-//           <td />
-//         )}
-//       </tr>
-//     );
-//   }
-// }

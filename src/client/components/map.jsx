@@ -4,10 +4,12 @@ import {MAP_STYLE3} from './mapstyle';
 class Map extends Component {
   constructor(props) {
     super(props);
+    this.fetchUser = this.fetchUser.bind(this);
     this.state = {
       lat: 1.3521,
       long: 103.8198,
-      place: ''
+      place: '',
+      userList: []
     };
   }
 
@@ -39,10 +41,20 @@ class Map extends Component {
 
   componentWillMount() {
     this.getGoogleMaps();
+    this.fetchUser();
+  }
+
+  fetchUser() {
+    fetch('api/users')
+      .then((res) => res.json())
+      .then((resultrows) =>
+        this.setState({userList: resultrows}, () => console.log('result of USERS fetch:', resultrows))
+      );
   }
 
   componentDidMount() {
     var reactThis = this;
+    console.log(this.state.userList, 'state of userList ~~~~ ');
 
     console.log('printing props from maps after maps been mounted', this.props);
     // Once the Google Maps API has finished loading, initialize the map
@@ -57,23 +69,24 @@ class Map extends Component {
 
       //we need to pass all functions inside the promise as we need maps, and infowindow to be globally available
       //createMarker passed inside promise such that we are only creating 1 info window
-      function createMarker(data) {
+      function createMarker(data, counterparty) {
+        var image = '';
+        if (data.ordertype === 'B') {
+          image = 'http://maps.google.com/mapfiles/ms/micons/blue.png';
+        }
         var myLatLng = new google.maps.LatLng(data.meet_lat, data.meet_long);
         var marker = new google.maps.Marker({
           position: myLatLng,
           map: map,
-          animation: google.maps.Animation.DROP
+          animation: google.maps.Animation.DROP,
           // icon: data.icon, //add icon inside results
+          icon: image
           // title: data.title
         });
-        var stuff = reactThis.state.foo;
         google.maps.event.addListener(marker, 'click', function() {
           infowindow.setContent(
             '<p>Ticker: ' +
               data.ticker +
-              '</p>' +
-              '<p>Price: ' +
-              data.price +
               '</p>' +
               '<p>Order type: ' +
               data.ordertype +
@@ -83,6 +96,12 @@ class Map extends Component {
               '</p>' +
               '<p>Good till: ' +
               data.available_till.split('T')[0] +
+              '<p>Counterparty id: ' +
+              data.user_id +
+              '</p>' +
+              '<p>Counterparty name: ' +
+              counterparty +
+              '</p>' +
               '</p>' +
               '<button id="markerButton" data-foo="' +
               data.user_id +
@@ -101,7 +120,13 @@ class Map extends Component {
       var infowindow = new google.maps.InfoWindow();
       let markers = [];
       for (let i = 0; i < this.props.result.length; i++) {
-        markers[i] = createMarker(this.props.result[i]);
+        let counterparty = '';
+        for (let j = 0; j < this.state.userList.length; j++) {
+          if (this.state.userList[j].id === parseInt(this.props.result[i].user_id)) {
+            counterparty = this.state.userList[j].name;
+          }
+        }
+        markers[i] = createMarker(this.props.result[i], counterparty);
       }
     });
   }

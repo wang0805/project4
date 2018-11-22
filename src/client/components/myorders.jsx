@@ -43,10 +43,8 @@ function stableSort(array, cmp) {
 const rows = [
   {id: 'ticker', numeric: false, disablePadding: true, label: 'Ticker'},
   {id: 'ordertype', numeric: false, disablePadding: false, label: 'Buy/Sell'},
-  {id: 'price', numeric: true, disablePadding: false, label: 'FX rate'},
   {id: 'quantity', numeric: true, disablePadding: false, label: 'Quantity'},
-  {id: 'orderstatus', numeric: false, disablePadding: false, label: 'Status'},
-  {id: 'action', numeric: false, disablePadding: false, label: 'Action(s)'}
+  {id: 'orderstatus', numeric: false, disablePadding: false, label: 'Status'}
 ];
 
 function getSorting(order, orderBy) {
@@ -131,45 +129,67 @@ const toolbarStyles = (theme) => ({
   }
 });
 
-let TableToolbar = (props) => {
-  const {numSelected, classes} = props;
+class TableToolbar extends Component {
+  constructor() {
+    super();
+    this.handleDelete = this.handleDelete.bind(this);
+  }
 
-  return (
-    <Toolbar
-      className={classNames(classes.root, {
-        [classes.highlight]: numSelected > 0
-      })}
-    >
-      <div className={classes.title}>
-        {numSelected > 0 ? (
-          <Typography color="inherit" variant="subtitle1">
-            {numSelected} selected
-          </Typography>
-        ) : (
-          <Typography variant="h6" id="tableTitle">
-            My Orders
-          </Typography>
-        )}
-      </div>
-      <div className={classes.spacer} />
-      <div className={classes.actions}>
-        {numSelected > 0 ? (
-          <Tooltip title="Delete">
-            <IconButton aria-label="Delete">
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-      </div>
-    </Toolbar>
-  );
-};
+  handleDelete() {
+    for (let i = 0; i < this.props.selected.length; i++) {
+      fetch(`/order/${this.props.selected[i]}/cancel`, {
+        method: 'PUT',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }).then(() => {
+        console.log('success in cancelling order!!!!');
+        this.props.updateOrder();
+      });
+    }
+  }
+
+  render() {
+    const {numSelected, classes} = this.props;
+    console.log(this.props, 'listening to props from table toolbar ~~~~~~');
+    return (
+      <Toolbar
+        className={classNames(classes.root, {
+          [classes.highlight]: numSelected > 0
+        })}
+      >
+        <div className={classes.title}>
+          {numSelected > 0 ? (
+            <Typography color="inherit" variant="subtitle1">
+              {numSelected} selected
+            </Typography>
+          ) : (
+            <Typography variant="h6" id="tableTitle">
+              My Orders
+            </Typography>
+          )}
+        </div>
+        <div className={classes.spacer} />
+        <div className={classes.actions}>
+          {numSelected > 0 ? (
+            <Tooltip title="Delete">
+              <IconButton onClick={this.handleDelete} aria-label="Delete">
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <Tooltip title="Filter list">
+              <IconButton aria-label="Filter list">
+                <FilterListIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+        </div>
+      </Toolbar>
+    );
+  }
+}
 
 TableToolbar.propTypes = {
   classes: PropTypes.object.isRequired,
@@ -210,8 +230,18 @@ class MyOrders extends React.Component {
     this.setState({
       data: this.props.result
     });
-    console.log('this the state of enhanced table ~~~~~~~~ ', this.state); //how come this doesnt receive
+    console.log('this the state of enhanced table ~~~~~~~~ ', this.state); //state still unchanged
     console.log('this the props of enhanced table ~~~~~~~~ ', this.props);
+  }
+
+  // ---- socket implementation pending ----
+  componentDidUpdate(prevProps) {
+    if (this.props.result != prevProps.result) {
+      console.log('updating props for myorders ~~~~~~~', this.props);
+      this.setState({
+        data: this.props.result
+      });
+    }
   }
 
   handleRequestSort = (event, property) => {
@@ -265,10 +295,14 @@ class MyOrders extends React.Component {
     const {classes} = this.props;
     const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-    const result = this.props.result.filter((c) => c.user_id === this.props.user); //use result instead of state
+    const result = data.filter((c) => c.user_id === this.props.user); //use result instead of state
     return (
       <Paper className={classes.root}>
-        <TableToolbar numSelected={selected.length} />
+        <TableToolbar
+          numSelected={selected.length}
+          selected={this.state.selected}
+          updateOrder={this.props.updateOrder}
+        />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead
@@ -301,16 +335,14 @@ class MyOrders extends React.Component {
                         {n.ticker}
                       </TableCell>
                       <TableCell>{n.ordertype}</TableCell>
-                      <TableCell numeric>{n.price}</TableCell>
                       <TableCell numeric>{n.quantity}</TableCell>
                       <TableCell>{n.orderstatus}</TableCell>
-                      <TableCell> Cancel </TableCell>
                     </TableRow>
                   );
                 })}
               {emptyRows > 0 && (
                 <TableRow style={{height: 49 * emptyRows}}>
-                  <TableCell colSpan={7} />
+                  <TableCell colSpan={5} />
                 </TableRow>
               )}
             </TableBody>

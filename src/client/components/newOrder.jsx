@@ -41,7 +41,6 @@ class NewOrder extends Component {
     this.state = {
       ticker: '',
       ordertype: 'B',
-      price: null,
       quantity: null,
       orderstatus: 'active',
       meet_address: '',
@@ -126,9 +125,9 @@ class NewOrder extends Component {
     event.preventDefault();
 
     const data = {
-      ticker: this.state.ticker,
+      // ticker: this.state.ticker,
+      ticker: 'USDSGD',
       ordertype: this.state.ordertype,
-      price: this.state.price,
       quantity: this.state.quantity,
       orderstatus: this.state.orderstatus,
       meet_address: this.state.meet_address,
@@ -172,30 +171,17 @@ class NewOrder extends Component {
               </DialogContentText>
               <br />
               <TextField
+                disabled
                 id="outlined-adornment-amount"
                 className={classNames(classes.margin, classes.textField)}
                 variant="outlined"
                 label="Ticker"
                 name="ticker"
-                value={this.state.ticker}
+                // value={this.state.ticker}
                 onChange={this.handleChange}
+                value="USDSGD"
                 InputProps={{
                   startAdornment: <InputAdornment position="start">T</InputAdornment>
-                }}
-                fullWidth
-              />
-              <br />
-              <br />
-              <TextField
-                id="outlined-adornment-amount"
-                className={classNames(classes.margin, classes.textField)}
-                variant="outlined"
-                label="Price"
-                name="price"
-                value={this.state.price}
-                onChange={this.handleChange}
-                InputProps={{
-                  startAdornment: <InputAdornment position="start">$</InputAdornment>
                 }}
                 fullWidth
               />

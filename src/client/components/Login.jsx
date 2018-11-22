@@ -104,9 +104,9 @@ class Login extends Component {
               <Grid container direction="column" justify="center" alignItems="center">
                 <Grid item>
                   <FormControl className={classNames(classes.margin, classes.textField)}>
-                    <InputLabel htmlFor="adornment-password">Username</InputLabel>
+                    <InputLabel htmlFor="adornment-name">Username</InputLabel>
                     <Input
-                      id="adornment-password"
+                      id="adornment-name"
                       name="name"
                       inputProps={{
                         'aria-label': 'Name'

@@ -43,7 +43,6 @@ function stableSort(array, cmp) {
 const rows = [
   {id: 'ticker', numeric: false, disablePadding: true, label: 'Ticker'},
   {id: 'ordertype', numeric: false, disablePadding: false, label: 'Buy/Sell'},
-  {id: 'price', numeric: true, disablePadding: false, label: 'FX rate'},
   {id: 'quantity', numeric: true, disablePadding: false, label: 'Quantity'},
   {id: 'orderstatus', numeric: false, disablePadding: false, label: 'Status'},
   {id: 'action', numeric: false, disablePadding: false, label: 'Action(s)'}
@@ -301,7 +300,6 @@ class Orders extends React.Component {
                         {n.ticker}
                       </TableCell>
                       <TableCell>{n.ordertype}</TableCell>
-                      <TableCell numeric>{n.price}</TableCell>
                       <TableCell numeric>{n.quantity}</TableCell>
                       <TableCell>{n.orderstatus}</TableCell>
                       {n.user_id !== this.props.user ? (
@@ -318,7 +316,7 @@ class Orders extends React.Component {
                 })}
               {emptyRows > 0 && (
                 <TableRow style={{height: 49 * emptyRows}}>
-                  <TableCell colSpan={7} />
+                  <TableCell colSpan={6} />
                 </TableRow>
               )}
             </TableBody>

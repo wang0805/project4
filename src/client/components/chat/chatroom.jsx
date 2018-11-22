@@ -7,11 +7,11 @@ import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Icon from '@material-ui/core/Icon';
-import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+
+import CurrentPrice from '../currentPrice';
 
 const styles = (theme) => ({
   root: {
@@ -29,9 +29,6 @@ const styles = (theme) => ({
   },
   rightIcon: {
     marginLeft: theme.spacing.unit
-  },
-  iconSmall: {
-    fontSize: 10
   }
 });
 
@@ -43,7 +40,7 @@ class Chatroom extends Component {
       receiver: null,
       messages: [],
       input: '',
-      styles: {display: 'inline-block'}
+      styles: {borderRadius: 5, paddingTop: 10, paddingBottom: 10, position: 'relative', left: 8, top: 2}
     };
     this.handleClick = this.handleClick.bind(this);
     this.setMsg = this.setMsg.bind(this);
@@ -77,7 +74,13 @@ class Chatroom extends Component {
 
   handleClick(event) {
     event.preventDefault();
-    let data = {message: true, to: this.props.idMarker, from: this.props.user, content: this.state.input};
+    let data = {
+      message: true,
+      to: this.props.idMarker,
+      from: this.props.user,
+      fromUser: this.props.username,
+      content: this.state.input
+    };
     console.log('data from input field ~~~ ', data);
     this.props.handleMessage(data);
     this.setState({input: ''});
@@ -89,29 +92,47 @@ class Chatroom extends Component {
       if (this.props.user === message.to || this.props.user === message.from) {
         return (
           <Typography component="p">
-            <Message message={message.content} to={message.to} from={message.from} />
+            <Message message={message.content} to={message.to} from={message.from} fromUser={message.fromUser} />
           </Typography>
         );
       }
     });
+
+    let placeHolder = 'Chat to User no.' + this.props.idMarker;
+
     return (
       <Grid container direction="column" justify="center" alignItems="center">
-        <Card className={classes.card}>
-          <CardActionArea>
-            <CardContent>
-              <Typography gutterBottom variant="h6" component="h2">
-                Chatroom
-              </Typography>
-              {msg}
-            </CardContent>
-          </CardActionArea>
-          <CardActions>
-            <form onSubmit={this.handleClick}>
-              <input style={this.state.styles} value={this.state.input} onChange={this.setMsg} />
-              <button type="submit">Submit</button>
-            </form>
-          </CardActions>
-        </Card>
+        <Grid item>
+          <Card className={classes.card}>
+            <CardActionArea>
+              <CardContent>
+                <Typography gutterBottom variant="h6" component="h2">
+                  Chatroom
+                </Typography>
+                {msg}
+              </CardContent>
+            </CardActionArea>
+            <CardActions>
+              <form onSubmit={this.handleClick}>
+                <input
+                  style={this.state.styles}
+                  value={this.state.input}
+                  onChange={this.setMsg}
+                  placeholder={placeHolder}
+                />
+                <Button type="submit" variant="contained" color="primary" className={classes.button}>
+                  Send
+                  <Icon className={classes.rightIcon}>send</Icon>
+                </Button>
+              </form>
+            </CardActions>
+          </Card>
+        </Grid>
+        <br />
+        <br />
+        <Grid item>
+          <CurrentPrice />
+        </Grid>
       </Grid>
     );
   }
