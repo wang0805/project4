@@ -17,14 +17,13 @@ module.exports = (app, db) => {
   // app.get("/users/:id", users.layout);
   // app.get("/users", users.layout);
   app.get('/api/orders', order.activeIndex);
+  app.get('/api/users', users.index);
 
   app.post('/users/create', users.create);
   app.post('/users/logout', users.logout);
   app.post('/users/login', users.login);
   app.post('/order/new', order.create);
-
-  // app.put("/order/:orderid/edit", order.update);
-  // app.put("/order/:orderid/cancel", order.cancel);
+  app.put('/order/:orderid/cancel', order.cancel);
 };
 /*
 routes.js export to index.js 

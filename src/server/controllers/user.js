@@ -8,6 +8,19 @@ module.exports = (db) => {
    * ===========================================
    */
 
+  const index = (request, response) => {
+    db.user.index((error, result) => {
+      if (error) {
+        console.error('error in getting back user index', error);
+        request.sendStatus(500);
+      } else {
+        console.log('user index result rows: ', result.rows);
+        var resultrows = result.rows;
+        response.json(resultrows);
+      }
+    });
+  };
+
   const create = (request, response) => {
     db.user.create(request.body, (error, queryResult) => {
       if (error) {
@@ -64,6 +77,7 @@ module.exports = (db) => {
   return {
     create,
     login,
-    logout
+    logout,
+    index
   };
 };

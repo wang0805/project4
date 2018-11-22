@@ -1,5 +1,7 @@
-INSERT INTO orders (ticker, ordertype, price, quantity, orderstatus, meet_address, meet_lat, meet_long, available_till, user_id) VALUES ('USDSGD', 'S', 1.35, 50, 'active', 'hougang', 1.3758, 103.8794, '2018-11-22', 1);
-INSERT INTO orders (ticker, ordertype, price, quantity, orderstatus, meet_address, meet_lat, meet_long, available_till, user_id) VALUES ('USDSGD', 'S', 1.35, 25, 'active', 'SweetH', 1.4296, 103.8483, '2018-11-22', 2);
-INSERT INTO orders (ticker, ordertype, price, quantity, orderstatus, meet_address, meet_lat, meet_long, available_till, user_id) VALUES ('USDSGD', 'B', 1.25, 50, 'active', 'GA', 1.30729, 103.83249, '2018-11-22', 3);
-INSERT INTO orders (ticker, ordertype, price, quantity, orderstatus, meet_address, meet_lat, meet_long, available_till, user_id) VALUES ('USDSGD', 'B', 1.25, 10, 'active', 'Northpt', 1.4284, 103.8361, '2018-11-22', 1);
-INSERT INTO orders (ticker, ordertype, price, quantity, orderstatus, meet_address, meet_lat, meet_long, available_till, user_id) VALUES ('USDSGD', 'B', 1.25, 30, 'active', 'hougang1mall', 1.3758, 103.8794, '2018-11-22', 2);
+INSERT INTO orders (ticker, ordertype, quantity, orderstatus, meet_address, meet_lat, meet_long, available_till, user_id) VALUES ('USDSGD', 'S', 100, 'active', 'hougang', 1.3758, 103.8794, '2018-11-25', 1);
+INSERT INTO orders (ticker, ordertype, quantity, orderstatus, meet_address, meet_lat, meet_long, available_till, user_id) VALUES ('USDSGD', 'S', 200, 'active', 'SweetH', 1.4296, 103.8483, '2018-11-25', 3);
+INSERT INTO orders (ticker, ordertype, quantity, orderstatus, meet_address, meet_lat, meet_long, available_till, user_id) VALUES ('USDSGD', 'B', 20, 'active', 'GA', 1.30729, 103.83249, '2018-11-25', 2);
+INSERT INTO orders (ticker, ordertype, quantity, orderstatus, meet_address, meet_lat, meet_long, available_till, user_id) VALUES ('USDSGD', 'B', 30, 'active', 'Northpt', 1.4284, 103.8361, '2018-11-25', 2);
+INSERT INTO orders (ticker, ordertype, quantity, orderstatus, meet_address, meet_lat, meet_long, available_till, user_id) VALUES ('USDSGD', 'B', 40, 'active', 'tampines mall', 1.3528, 103.9446, '2018-11-25', 1);
+INSERT INTO orders (ticker, ordertype, quantity, orderstatus, meet_address, meet_lat, meet_long, available_till, user_id) VALUES ('USDSGD', 'B', 40, 'active', 'Changi', 1.3450, 103.9832, '2018-11-25', 3);
+INSERT INTO orders (ticker, ordertype, quantity, orderstatus, meet_address, meet_lat, meet_long, available_till, user_id) VALUES ('USDSGD', 'B', 40, 'active', 'Clementi', 1.3162, 103.7649, '2018-11-25', 1);

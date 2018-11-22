@@ -1,47 +1,69 @@
 import React, {Component} from 'react';
 import {withRouter} from 'react-router-dom';
 
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 
-// const styles = theme => ({
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import FormControl from '@material-ui/core/FormControl';
+// import Checkbox from '@material-ui/core/Checkbox';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import LockIcon from '@material-ui/icons/LockOutlined';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+
+const styles = (theme) => ({
+  main: {
+    width: 'auto',
+    display: 'block', // Fix IE 11 issue.
+    marginLeft: theme.spacing.unit * 3,
+    marginRight: theme.spacing.unit * 3,
+    [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
+      width: 400,
+      marginLeft: 'auto',
+      marginRight: 'auto'
+    }
+  },
+  paper: {
+    marginTop: theme.spacing.unit * 8,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`
+  },
+  avatar: {
+    margin: theme.spacing.unit,
+    backgroundColor: theme.palette.secondary.main
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing.unit
+  },
+  submit: {
+    marginTop: theme.spacing.unit * 3
+  }
+});
+
+// const styles = (theme) => ({
 //   root: {
-//     flexGrow: 1
+//     display: 'flex',
+//     flexWrap: 'wrap'
 //   },
 //   margin: {
 //     margin: theme.spacing.unit
-//   },
-//   withoutLabel: {
-//     marginTop: theme.spacing.unit * 3
 //   },
 //   textField: {
 //     flexBasis: 200
 //   }
 // });
-
-const styles = (theme) => ({
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap'
-  },
-  margin: {
-    margin: theme.spacing.unit
-  },
-  textField: {
-    flexBasis: 200
-  }
-});
 
 class Signup extends Component {
   constructor() {
@@ -51,7 +73,8 @@ class Signup extends Component {
     this.handleClickShowPassword = this.handleClickShowPassword.bind(this);
     this.state = {
       name: '',
-      password: ''
+      password: '',
+      showPassword: false
     };
   }
 
@@ -88,96 +111,55 @@ class Signup extends Component {
     const {classes} = this.props;
 
     return (
-      // <div className={classes.root}>
-      //   <form onSubmit={this.handleSubmit}>
-      //     <Grid container spacing={24}>
-      //       <Grid item xs={12}>
-      //         <FormControl
-      //           className={classNames(
-      //             classes.margin,
-      //             classes.withoutLabel,
-      //             classes.textField
-      //           )}
-      //           aria-describedby="name-helper-text"
-      //         >
-      //           <Input
-      //             id="adornment-weight"
-      //             name="name"
-      //             onChange={this.handleChange}
-      //             inputProps={{
-      //               "aria-label": "Name"
-      //             }}
-      //           />
-      //           <FormHelperText id="name-helper-text">Name</FormHelperText>
-      //         </FormControl>
-      //       </Grid>
-      //       <Grid item xs={12}>
-      //         <FormControl
-      //           className={classNames(classes.margin, classes.textField)}
-      //         >
-      //           <InputLabel htmlFor="adornment-password">Password</InputLabel>
-      //           <Input
-      //             id="adornment-password"
-      //             type={this.state.showPassword ? "text" : "password"}
-      //             name="password"
-      //             onChange={this.handleChange}
-      //             endAdornment={
-      //               <InputAdornment position="end">
-      //                 <IconButton
-      //                   aria-label="Toggle password visibility"
-      //                   onClick={this.handleClickShowPassword}
-      //                 >
-      //                   {this.state.showPassword ? (
-      //                     <Visibility />
-      //                   ) : (
-      //                     <VisibilityOff />
-      //                   )}
-      //                 </IconButton>
-      //               </InputAdornment>
-      //             }
-      //           />
-      //         </FormControl>
-      //         <input type="submit" value="submit" />
-      //       </Grid>
-      //     </Grid>
-      //   </form>
-      // </div>
-      <div className={classes.root}>
-        <form onSubmit={this.handleSubmit}>
-          <TextField
-            id="outlined-adornment-amount"
-            className={classNames(classes.margin, classes.textField)}
-            variant="outlined"
-            label="Name"
-            name="name"
-            value={this.state.name}
-            onChange={this.handleChange}
-            InputProps={{
-              startAdornment: <InputAdornment position="start">@</InputAdornment>
-            }}
-          />
-          <TextField
-            id="outlined-adornment-password"
-            className={classNames(classes.margin, classes.textField)}
-            variant="outlined"
-            type={this.state.showPassword ? 'text' : 'password'}
-            label="Password"
-            name="password"
-            value={this.state.password}
-            onChange={this.handleChange}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton aria-label="Toggle password visibility" onClick={this.handleClickShowPassword}>
-                    {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-          />
-          <input type="submit" value="submit" />
-        </form>
-      </div>
+      <main className={classes.main}>
+        <CssBaseline />
+        <Paper className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign Up
+          </Typography>
+          <form className={classes.form} onSubmit={this.handleSubmit}>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="name">Username</InputLabel>
+              <Input
+                id="name"
+                name="name"
+                autoComplete="name"
+                autoFocus
+                value={this.state.name}
+                onChange={this.handleChange}
+              />
+            </FormControl>
+
+            <FormControl margin="normal" required fullWidth>
+              <TextField
+                type={this.state.showPassword ? 'text' : 'password'}
+                name="password"
+                label="Password"
+                id="outlined-adornment-password"
+                value={this.state.password}
+                onChange={this.handleChange}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton aria-label="Toggle password visibility" onClick={this.handleClickShowPassword}>
+                        {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+            </FormControl>
+
+            {/* <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" /> */}
+            <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+              Sign in
+            </Button>
+          </form>
+        </Paper>
+      </main>
     );
   }
 }

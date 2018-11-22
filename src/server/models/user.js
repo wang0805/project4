@@ -6,6 +6,14 @@ var sha256 = require('js-sha256');
  * ===========================================
  */
 module.exports = (dbPoolInstance) => {
+  const index = (callback) => {
+    const query = 'SELECT * FROM users ORDER BY id ASC';
+
+    dbPoolInstance.query(query, (error, result) => {
+      callback(error, result);
+    });
+  };
+
   const create = (user, callback) => {
     // run user input password through bcrypt to obtain hashed password
 
@@ -34,6 +42,7 @@ module.exports = (dbPoolInstance) => {
 
   return {
     create,
-    login
+    login,
+    index
   };
 };

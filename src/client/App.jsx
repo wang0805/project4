@@ -64,6 +64,9 @@ class App extends Component {
                   user={this.state.user}
                   username={this.state.username}
                   idMarker={this.state.idMarker}
+                  setLogin={this.setLogin}
+                  setUser={this.setUser}
+                  setUsername={this.setUsername}
                 />
               )}
             />
