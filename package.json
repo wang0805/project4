@@ -85,6 +85,7 @@
     "compression": ">=1.7.2",
     "cookie-parser": "^1.4.3",
     "dotenv": "^6.1.0",
+    "dotenv-webpack": "^1.5.7",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-fbjs": ">=2.0.1",
     "express": ">=4.16.2",

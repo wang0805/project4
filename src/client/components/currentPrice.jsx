@@ -100,7 +100,7 @@ class CurrentPrice extends Component {
     };
   }
   componentDidMount() {
-    var APIkey = 'V9CIRQRJSAFI99RM';
+    var APIkey = process.env.VANTAGE_API;
     fetch(
       `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=SGD&apikey=${APIkey}`
     )

@@ -64,7 +64,7 @@ class NewOrder extends Component {
         };
         // Load the Google Maps API
         const script = document.createElement('script');
-        const API = 'AIzaSyACySFLlLmNi76Xy9u-nD_LtiVJLUnkuN0';
+        const API = process.env.REACT_APP_MAP;
         script.src =
           'https://maps.googleapis.com/maps/api/js?key=AIzaSyACySFLlLmNi76Xy9u-nD_LtiVJLUnkuN0&libraries=places&callback=resolveGoogleMapsPromise';
         script.async = true;

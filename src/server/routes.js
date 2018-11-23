@@ -9,13 +9,6 @@ module.exports = (app, db) => {
    */
 
   // CRUD
-
-  // app.get("/users/new", users.newForm); // users/new has to be first other :id will overwrite and new != int
-  // app.get("/users/:id/order/:orderid/edit", order.edit);
-  // app.get("/users/:id/order/:orderid/cancel", order.cfmcancel);
-  // app.get("/users/:id/profile", users.profile);
-  // app.get("/users/:id", users.layout);
-  // app.get("/users", users.layout);
   app.get('/api/orders', order.activeIndex);
   app.get('/api/users', users.index);
 

@@ -1,7 +1,7 @@
 const {resolve, join} = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-
+const Dotenv = require('dotenv-webpack');
 const IS_DEV = process.env.NODE_ENV !== 'production';
 
 module.exports = {
@@ -14,19 +14,6 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        enforce: 'pre',
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        loader: 'eslint-loader',
-        options: {
-          emitError: true,
-          emitWarning: true,
-          quiet: false,
-          failOnWarning: false,
-          failOnError: false
-        }
-      },
       {
         test: /\.(js|jsx)$/,
         use: ['babel-loader'],
@@ -74,7 +61,8 @@ module.exports = {
       filename: '[name].css',
       disable: IS_DEV
     }),
-    new webpack.EnvironmentPlugin(['NODE_ENV'])
+    new webpack.EnvironmentPlugin(['NODE_ENV']),
+    new Dotenv()
   ],
   resolve: {
     modules: ['node_modules', join('src', 'client')],
