@@ -16,8 +16,7 @@
   },
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon src/server",
-
-    "start": "node index.js",
+    "start": "cross-env NODE_ENV=production node build/server",
     "prebuild": "rimraf build",
     "build": "npm run build:client && npm run build:server",
     "build:client": "cross-env NODE_ENV=production webpack -p --progress --config=config/webpack.config.prod.js",
@@ -27,7 +26,7 @@
     "test": "exit 1",
     "release:patch": "npm run lint && npx standard-version -r patch && git push --follow-tags origin master",
     "release:minor": "npm run lint && npx standard-version -r minor && git push --follow-tags origin master",
-    "release:major": "npm run lint && npx standard-version -r major && git push --follow-tags origin master"
+    "release:major": "npm run lint && npx standard-version -r major && git push --follow-tags origin master",
   },
   "postcss": {},
   "devDependencies": {
