@@ -1,6 +1,6 @@
 const sha256 = require('js-sha256');
 const SALT = 'fxchange';
-const socketfuncs = require('../../client/components/functions'); //server has to use require not import
+const socketfuncs = require('../functions'); //server has to use require not import
 
 module.exports = (db) => {
   //var orderStatus = ['active', 'expired', 'cancelled'];
