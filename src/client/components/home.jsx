@@ -83,7 +83,7 @@ class Home extends Component {
     // socket.on('APICALL', (data) => this.setState({result: data}));
 
     // socket = openSocket('http://127.0.0.1:3000');
-    socket = openSocket('https://sheltered-badlands-12857.herokuapp.com/');
+    socket = openSocket('https://sheltered-badlands-12857.herokuapp.com');
     socket.on('added order', (data) => {
       if (data.addOrder === true) {
         console.log('testing if orders live updating works ~~~~~~~');
@@ -101,7 +101,7 @@ class Home extends Component {
 
   handleMessage(data) {
     // socket = openSocket('http://127.0.0.1:3000');
-    socket = openSocket('https://sheltered-badlands-12857.herokuapp.com/');
+    socket = openSocket('https://sheltered-badlands-12857.herokuapp.com');
     socket.emit('added order', data);
   }
 
