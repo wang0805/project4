@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 // import {Link} from 'react-router-dom'; //link to login router if required
 import NewOrder from './newOrder';
 import Map from './map';
-import socketIOClient from 'socket.io-client';
+import openSocket from 'socket.io-client';
 import Chatroom from './chat/chatroom';
 // import {socketfuncs} from './functions'; //if using helper functions
 import Orders from './orders';
