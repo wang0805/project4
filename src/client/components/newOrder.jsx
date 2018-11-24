@@ -66,7 +66,7 @@ class NewOrder extends Component {
         const script = document.createElement('script');
         const API = process.env.REACT_APP_MAP;
         script.src =
-          'https://maps.googleapis.com/maps/api/js?key=AIzaSyACySFLlLmNi76Xy9u-nD_LtiVJLUnkuN0&libraries=places&callback=resolveGoogleMapsPromise';
+          `https://maps.googleapis.com/maps/api/js?key=${API}&libraries=places&callback=resolveGoogleMapsPromise`;
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);

@@ -11,7 +11,7 @@ const socketIO = require('socket.io');
 const axios = require('axios');
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-process.env.HTTP_PORT = process.env.HTTP_PORT || 3000;
+process.env.PORT = process.env.PORT || 3000;
 
 /**
  * ===================================
@@ -80,7 +80,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => console.log('user disconnected'));
 });
 
-server.listen(process.env.HTTP_PORT, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+server.listen(process.env.PORT, () => console.log(`~~~ Tuning in to the waves of port **${process.env.PORT}** ~~~`));
 
 // Run clean up actions when server shuts down
 server.on('close', () => {
