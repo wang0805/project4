@@ -152,7 +152,7 @@ class TableToolbar extends Component {
 
   render() {
     const {numSelected, classes} = this.props;
-    console.log(this.props, 'listening to props from table toolbar ~~~~~~');
+    // console.log(this.props, 'listening to props from table toolbar ~~~~~~');
     return (
       <Toolbar
         className={classNames(classes.root, {

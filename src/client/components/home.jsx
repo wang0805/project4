@@ -16,6 +16,8 @@ import NavigationIcon from '@material-ui/icons/Navigation';
 import Grid from '@material-ui/core/Grid';
 import MUIDataTable from 'mui-datatables';
 
+import TestingChat from './chat/testingChat';
+
 const styles = (theme) => ({
   button: {
     margin: theme.spacing.unit
@@ -40,9 +42,16 @@ class Home extends Component {
       displayadd: false,
       scroll: 'paper',
       displaychat: false,
-      messages: []
+      messages: [],
+      socket: null,
+      chatrooms: [],
+      joinedRoom: false
     };
   }
+
+  setJoinedRoom = () => {
+    this.setState({joinedRoom: false});
+  };
 
   setMsgs(params) {
     this.setState({messages: [...this.state.messages, params]});
@@ -68,6 +77,25 @@ class Home extends Component {
     return obj;
   }
 
+  compare(a, b) {
+    if (parseInt(b) > parseInt(a)) {
+      return `${a}to${b}`;
+    } else {
+      return `${b}to${a}`;
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.idMarker != prevProps.idMarker) {
+      let room = this.compare(this.props.user, this.props.idMarker);
+      //to check if already joined room, as can be joined by other users
+      if (!this.state.chatrooms.includes(room)) {
+        this.setState({joinedRoom: true});
+        this.state.socket.emit('joinRoom', room);
+      }
+    }
+  }
+
   componentDidMount() {
     this.updateOrder();
     //if cookies not cleared - allow user to remain logged in if refresh
@@ -82,8 +110,21 @@ class Home extends Component {
     // const socket = socketIOClient(endpoint);
     // socket.on('APICALL', (data) => this.setState({result: data}));
 
-    // socket = openSocket('http://127.0.0.1:3000');
-    const socket = openSocket('https://sheltered-badlands-12857.herokuapp.com');
+    const socket = openSocket('/');
+    this.setState({socket});
+    socket.on('success', (room) => {
+      if (room.split('to').includes(this.props.user.toString())) {
+        if (this.state.chatrooms.length > 0) {
+          if (!this.state.chatrooms.includes(room)) {
+            this.setState({chatrooms: [...this.state.chatrooms, room]});
+          }
+        } else if (this.state.chatrooms.length === 0) {
+          this.setState({chatrooms: [room]});
+        }
+      }
+      console.log('current chat rooms ~~~ ', this.state.chatrooms);
+    });
+
     socket.on('added order', (data) => {
       if (data.addOrder === true) {
         console.log('testing if orders live updating works ~~~~~~~');
@@ -100,8 +141,7 @@ class Home extends Component {
   }
 
   handleMessage(data) {
-    // socket = openSocket('http://127.0.0.1:3000');
-    const socket = openSocket('https://sheltered-badlands-12857.herokuapp.com');
+    const socket = openSocket('/');
     socket.emit('added order', data);
   }
 
@@ -144,10 +184,24 @@ class Home extends Component {
 
     return (
       <div className={classes.root}>
+        <div>
+          <div>Testing chat room</div>
+          {this.state.chatrooms.map((room, index) => (
+            <TestingChat
+              key={index}
+              room={room}
+              user={this.props.user}
+              username={this.props.username}
+              socket={this.state.socket}
+              joinedRoom={this.state.joinedRoom}
+              setJoinedRoom={this.setJoinedRoom}
+            />
+          ))}
+        </div>
         <Grid container spacing={32}>
           {this.state.result.length > 0 && (
             <Grid item xs={12}>
-              <Map result={this.state.result} />
+              <Map result={this.state.result} socket={this.state.socket} />
             </Grid>
           )}
 

@@ -72,9 +72,16 @@ var server = http.createServer(app);
 const io = socketIO(server);
 
 io.on('connection', (socket) => {
-  console.log('new connection from server');
+  console.log('new connection from server with id:, ', socket.id);
   socket.on('added order', (data) => {
     io.sockets.emit('added order', data);
+  });
+  socket.on('joinRoom', (room) => {
+    socket.join(room);
+    io.emit('success', room);
+    socket.on(room, (data) => {
+      io.to(room).emit('message', data);
+    });
   });
 
   socket.on('disconnect', () => console.log('user disconnected'));
