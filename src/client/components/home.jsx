@@ -27,6 +27,15 @@ const styles = (theme) => ({
   },
   root: {
     flexGrow: 1
+  },
+  root1: {
+    width: '400'
+  },
+  appBar: {
+    position: 'relative'
+  },
+  flex: {
+    flex: 1
   }
 });
 
@@ -45,9 +54,18 @@ class Home extends Component {
       messages: [],
       socket: null,
       chatrooms: [],
-      joinedRoom: false
+      // joinedRoom: false,
+      chatPopup: false
     };
   }
+
+  handleChatOpen = () => {
+    this.setState({chatPopup: true});
+  };
+
+  handleChatClose = () => {
+    this.setState({chatPopup: false});
+  };
 
   setJoinedRoom = () => {
     this.setState({joinedRoom: false});
@@ -113,6 +131,7 @@ class Home extends Component {
     const socket = openSocket('/');
     this.setState({socket});
     socket.on('success', (room) => {
+      console.log(`success in joining room: ${room}`);
       if (room.split('to').includes(this.props.user.toString())) {
         if (this.state.chatrooms.length > 0) {
           if (!this.state.chatrooms.includes(room)) {
@@ -184,24 +203,10 @@ class Home extends Component {
 
     return (
       <div className={classes.root}>
-        <div>
-          <div>Testing chat room</div>
-          {this.state.chatrooms.map((room, index) => (
-            <TestingChat
-              key={index}
-              room={room}
-              user={this.props.user}
-              username={this.props.username}
-              socket={this.state.socket}
-              joinedRoom={this.state.joinedRoom}
-              setJoinedRoom={this.setJoinedRoom}
-            />
-          ))}
-        </div>
         <Grid container spacing={32}>
           {this.state.result.length > 0 && (
             <Grid item xs={12}>
-              <Map result={this.state.result} socket={this.state.socket} />
+              <Map result={this.state.result} />
             </Grid>
           )}
 
@@ -222,7 +227,24 @@ class Home extends Component {
               <MyOrders user={this.props.user} result={this.state.result} updateOrder={this.updateOrder} />
             </Grid>
           )}
+
           <Grid item xs={12} sm={4}>
+            <Grid item>
+              <div className={classes.root1}>
+                {this.state.chatrooms.map((room, index) => (
+                  <TestingChat
+                    key={index}
+                    room={room}
+                    user={this.props.user}
+                    username={this.props.username}
+                    socket={this.state.socket}
+                    joinedRoom={this.state.joinedRoom}
+                    setJoinedRoom={this.setJoinedRoom}
+                  />
+                ))}
+              </div>
+            </Grid>
+            <br />
             <Grid container direction="row" justify="space-evenly" alignItems="center">
               <Grid item>
                 <div>
@@ -239,6 +261,7 @@ class Home extends Component {
                   )}
                 </div>
               </Grid>
+
               <Grid item>
                 <div>
                   {this.props.loggedin && (

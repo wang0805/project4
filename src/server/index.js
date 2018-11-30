@@ -84,6 +84,13 @@ io.on('connection', (socket) => {
     });
   });
 
+  socket.on('leaveRoom', (data) => {
+    socket.leave(data.room, function(err) {
+      console.log(err, socket.adapter.rooms, 'check if left room');
+    });
+    console.log(data.room, socket.adapter.rooms, 'leaving room ~~~~');
+  });
+
   socket.on('disconnect', () => console.log('user disconnected'));
 });
 
