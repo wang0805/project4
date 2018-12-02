@@ -75,7 +75,7 @@ class TestingChat extends Component {
           <Typography className={classes.heading}>Room: {this.props.room}</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <div>
+          <div style={{width: '100%'}}>
             {msg}
             <div>
               <form onSubmit={this.sendMessage}>

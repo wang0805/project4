@@ -26,7 +26,9 @@ const styles = (theme) => ({
     marginRight: theme.spacing.unit
   },
   root: {
-    flexGrow: 1
+    flexGrow: 1,
+    marginLeft: 10,
+    marginRight: 10
   },
   root1: {
     width: '400'
@@ -54,18 +56,9 @@ class Home extends Component {
       messages: [],
       socket: null,
       chatrooms: [],
-      // joinedRoom: false,
-      chatPopup: false
+      joinedRoom: false
     };
   }
-
-  handleChatOpen = () => {
-    this.setState({chatPopup: true});
-  };
-
-  handleChatClose = () => {
-    this.setState({chatPopup: false});
-  };
 
   setJoinedRoom = () => {
     this.setState({joinedRoom: false});
