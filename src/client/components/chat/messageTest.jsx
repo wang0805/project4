@@ -5,15 +5,18 @@ class MessageTest extends Component {
     return (
       <div>
         {this.props.username === this.props.message.from ? (
-          <div style={{marginBottom: 17, textAlign: 'right'}}>
+          <div style={{marginBottom: 20, textAlign: 'right'}}>
             <span
               style={{
                 borderStyle: 'solid',
+                color: 'white',
+                borderColor: '#3F51B5',
+                backgroundColor: '#3F51B5',
                 borderWidth: 1,
-                paddingTop: 5,
-                paddingBottom: 5,
-                paddingLeft: 5,
-                paddingRight: 5,
+                paddingTop: 8,
+                paddingBottom: 8,
+                paddingLeft: 8,
+                paddingRight: 8,
                 borderRadius: 8
               }}
             >
@@ -21,19 +24,22 @@ class MessageTest extends Component {
             </span>
           </div>
         ) : (
-          <div style={{marginBottom: 17}}>
+          <div style={{marginBottom: 20}}>
             <span
               style={{
                 borderStyle: 'solid',
+                borderColor: '#3F51B5',
+                color: 'white',
+                backgroundColor: '#3F51B5',
                 borderWidth: 1,
-                paddingTop: 5,
-                paddingBottom: 5,
-                paddingLeft: 5,
-                paddingRight: 5,
+                paddingTop: 8,
+                paddingBottom: 8,
+                paddingLeft: 8,
+                paddingRight: 8,
                 borderRadius: 8
               }}
             >
-              From: {this.props.message.from} || {this.props.message.message}
+              {this.props.message.from}: {this.props.message.message}
             </span>
           </div>
         )}

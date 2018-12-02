@@ -32,38 +32,48 @@ class TestingChat extends Component {
 
   sendMessage = (e) => {
     e.preventDefault();
-    this.props.socket.emit(this.props.room, {
+    this.props.socket.emit(this.props.room.room, {
       room: this.state.room,
       data: {message: this.state.message, from: this.props.username}
     });
-    // this.setState({messages: [...this.state.messages, e.target.value]});
+    this.setState({message: ''});
   };
 
   componentWillMount() {
-    //since component didnt update for other user, joinedRoom will be false hence join room
-    if (!this.props.joinedRoom) {
-      this.props.socket.emit('joinRoom', this.props.room);
+    //check if joined room
+    if (this.props.room.joined === false) {
+      this.props.socket.emit('joinRoom', this.props.room.room);
+      //change joined to true
+      const chatrooms = [...this.props.chatrooms];
+      const index = chatrooms.indexOf(this.props.room);
+      chatrooms[index] = {...this.props.room};
+      chatrooms[index] = {room: this.props.room.room, joined: true};
+      this.props.setJoinedRoom(chatrooms);
     }
-    this.props.setJoinedRoom(); //set the joinedRoom back to false for other msg pop ups
 
     const {socket} = this.props;
-    this.setState({room: this.props.room});
+    this.setState({room: this.props.room.room});
+    if (localStorage.getItem(this.props.room.room)) {
+      this.setState({messages: JSON.parse(localStorage.getItem(this.props.room.room))});
+    }
 
     socket.on('message', (data) => {
       console.log('data received from server to testing chat', data);
-      if (data.room === this.props.room) {
+      if (data.room === this.props.room.room) {
         this.setState({messages: [...this.state.messages, data.data]});
       }
     });
   }
 
   componentWillUnmount() {
-    this.props.socket.emit('leaveRoom', {room: this.props.room, user: this.props.user});
+    // if 'left room', you won't be able to display msgs after component unmount then mount agaain -> why?
+    // this.props.socket.emit('leaveRoom', {room: this.props.room.room, user: this.props.user});
+    localStorage.setItem(this.props.room.room, JSON.stringify(this.state.messages));
   }
 
   render() {
     const {classes} = this.props;
-    console.log(this.props, 'props of testing chat');
+    // console.log(this.props, 'props of testing chat');
     // console.log(this.state, 'states of testing chat');
     let msg = this.state.messages.map((message, index) => {
       return <MessageTest key={index} message={message} username={this.props.username} />;
@@ -72,7 +82,7 @@ class TestingChat extends Component {
     return (
       <ExpansionPanel>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography className={classes.heading}>Room: {this.props.room}</Typography>
+          <Typography className={classes.heading}>Room: {this.props.room.room}</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <div style={{width: '100%'}}>
