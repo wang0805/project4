@@ -32,7 +32,7 @@ You can see how the web application works below:
 * Entire application is meant to be a single page application whereby different components of the app are being rendered separately by ReactJs when called upon
 * Authentication was done initially in Auth0 (check groceryList repo) but afterwards changed to using normal SHA256 hashing so as to have a more hollistic application of react routers
 * After a user sign up and login, he/she is automatically greeted by a Map with green and red markers whereby green represents buy orders and red represents sell orders of other users. Prices are always marked at market mid price which users can calculate the equivalent amount at the currentPrice component on the right hand side
-* Should the user be happy with other user(s) orders, they can click to chat with them to arrange for a meet-up
+* Should the user be happy with other user(s) orders, they can click to chat with them to arrange for a meet-up via the Map icons
 * Note that chat records are not being stored into database (as it is meant for a socket.io practice but this could be done by calling fetch on the chat msg API after creating an Express route)
 * Users can add orders (which reflects in real-time) and cancel orders which affects both changes in state and the database.
 
