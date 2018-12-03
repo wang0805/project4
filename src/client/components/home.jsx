@@ -320,7 +320,7 @@ class Home extends Component {
                     )}
                   </div>
                 </Grid>
-                <Grid item>
+                {/* <Grid item>
                   <div>
                     {this.props.loggedin && (
                       <Button className={classes.button} onClick={() => this.handleChat(!this.state.displaychat)}>
@@ -328,7 +328,7 @@ class Home extends Component {
                       </Button>
                     )}
                   </div>
-                </Grid>
+                </Grid> */}
               </Grid>
               <br />
               <br />
