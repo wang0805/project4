@@ -259,7 +259,7 @@ class Home extends Component {
           <Grid container spacing={32}>
             {this.state.result.length > 0 && (
               <Grid item xs={12}>
-                <Map result={this.state.result} />
+                <Map result={this.state.result} userid={this.props.user} />
               </Grid>
             )}
             {/* this is a open dialog box so doesnt matter where it is */}

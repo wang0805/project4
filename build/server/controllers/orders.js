@@ -10,7 +10,7 @@ module.exports = (db) => {
         console.log('error', error);
         response.sendStatus(500);
       } else {
-        console.log('active index result rows: ', result.rows);
+        // console.log('active index result rows: ', result.rows);
         //response.render('order/activeindex', {orders: result.rows});
         var resultrows = result.rows;
         response.json(resultrows);
@@ -25,7 +25,7 @@ module.exports = (db) => {
         console.error('error: ', error);
         response.sendStatus(500);
       } else {
-        console.log('result of create orders rows', result.rows);
+        // console.log('result of create orders rows', result.rows);
 
         //if postdata suceeds, emit to server to be broadcast to others
         let data = {addOrder: true, currencyPair: 'usd/sgd', amount: '10'};

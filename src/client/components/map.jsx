@@ -47,9 +47,7 @@ class Map extends Component {
   fetchUser() {
     fetch('api/users')
       .then((res) => res.json())
-      .then((resultrows) =>
-        this.setState({userList: resultrows}, () => console.log('result of USERS fetch:', resultrows))
-      );
+      .then((resultrows) => this.setState({userList: resultrows}));
   }
 
   componentDidMount() {
@@ -131,7 +129,9 @@ class Map extends Component {
             counterparty = this.state.userList[j].name;
           }
         }
-        markers[i] = createMarker(this.props.result[i], counterparty);
+        if (this.props.result[i].user_id !== this.props.userid) {
+          markers[i] = createMarker(this.props.result[i], counterparty);
+        }
       }
     });
   }

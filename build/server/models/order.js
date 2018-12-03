@@ -26,7 +26,7 @@ module.exports = (dbPoolInstance) => {
 
     dbPoolInstance.query(query, values, (error, result) => {
       callback(error, result);
-      console.log('id from orders create: ', result.rows);
+      // console.log('id from orders create: ', result.rows);
     });
   };
 
