@@ -10,7 +10,7 @@ This project also aims to get a personal exposure to different features such as 
 
 You can see how the web application works below:
 
-![GIF](https://github.com/wang0805/tetrisproject/images/01.gif)
+![GIF](https://github.com/wang0805/project4/blob/master/src/assets/04.gif)
 
 [Link to Application](https://sheltered-badlands-12857.herokuapp.com)
 
