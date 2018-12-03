@@ -44,6 +44,7 @@ class Navbar extends Component {
       this.props.setLogin(false);
       this.props.setUser('');
       this.props.setUsername('');
+      localStorage.clear();
     });
   }
   render() {
