@@ -72,9 +72,30 @@ var server = http.createServer(app);
 const io = socketIO(server);
 
 io.on('connection', (socket) => {
-  console.log('new connection from server');
+  console.log('new connection from server with id:, ', socket.id);
   socket.on('added order', (data) => {
     io.sockets.emit('added order', data);
+  });
+  socket.on('joinRoom', (room) => {
+    socket.join(room);
+    io.emit('success', room);
+    socket.on(room, (data) => {
+      io.to(room).emit('message', data);
+    });
+  });
+
+  socket.on('left', (data) => {
+    io.to(data.room).emit('notice', data);
+  });
+  socket.on('hello', (data) => {
+    io.to(data.room).emit('helloback', data);
+  });
+
+  socket.on('leaveRoom', (data) => {
+    socket.leave(data.room, function(err) {
+      console.log(err, socket.adapter.rooms, 'check if left room');
+    });
+    console.log(data.room, socket.adapter.rooms, 'leaving room ~~~~');
   });
 
   socket.on('disconnect', () => console.log('user disconnected'));

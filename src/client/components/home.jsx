@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 // import {Link} from 'react-router-dom'; //link to login router if required
 import NewOrder from './newOrder';
 import Map from './map';
@@ -12,9 +12,20 @@ import CurrentPrice from './currentPrice';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import NavigationIcon from '@material-ui/icons/Navigation';
 import Grid from '@material-ui/core/Grid';
 import MUIDataTable from 'mui-datatables';
+
+import Dialog from '@material-ui/core/Dialog';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+import CloseIcon from '@material-ui/icons/Close';
+import Slide from '@material-ui/core/Slide';
+
+import AddIcon from '@material-ui/icons/Add';
+
+import TestingChat from './chat/testingChat';
 
 const styles = (theme) => ({
   button: {
@@ -24,9 +35,24 @@ const styles = (theme) => ({
     marginRight: theme.spacing.unit
   },
   root: {
-    flexGrow: 1
+    flexGrow: 1,
+    marginLeft: 10,
+    marginRight: 10
+  },
+  root1: {
+    width: '400'
+  },
+  appBar: {
+    position: 'relative'
+  },
+  flex: {
+    flex: 1
   }
 });
+
+function Transition(props) {
+  return <Slide direction="up" {...props} />;
+}
 
 class Home extends Component {
   constructor(props) {
@@ -40,9 +66,24 @@ class Home extends Component {
       displayadd: false,
       scroll: 'paper',
       displaychat: false,
-      messages: []
+      messages: [],
+      socket: null,
+      chatrooms: [],
+      chatPopup: false
     };
   }
+
+  handleChatOpen = () => {
+    this.setState({chatPopup: true});
+  };
+
+  handleChatClose = () => {
+    this.setState({chatPopup: false});
+  };
+
+  setJoinedRoom = (params) => {
+    this.setState({chatrooms: params});
+  };
 
   setMsgs(params) {
     this.setState({messages: [...this.state.messages, params]});
@@ -68,6 +109,32 @@ class Home extends Component {
     return obj;
   }
 
+  compare(a, b) {
+    if (parseInt(b) > parseInt(a)) {
+      return `${a}to${b}`;
+    } else {
+      return `${b}to${a}`;
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.idMarker != prevProps.idMarker) {
+      let room = this.compare(this.props.user, this.props.idMarker);
+      //to check if already joined room, as can be joined by other users
+      let inChatrooms = false;
+      this.state.chatrooms.forEach(function(rooms) {
+        if (rooms.room === room) {
+          inChatrooms = true;
+        }
+      });
+      //synchronous
+      if (inChatrooms === false) {
+        this.setState({chatrooms: [...this.state.chatrooms, {room: room, joined: true}]});
+        this.state.socket.emit('joinRoom', room);
+      }
+    }
+  }
+
   componentDidMount() {
     this.updateOrder();
     //if cookies not cleared - allow user to remain logged in if refresh
@@ -82,8 +149,24 @@ class Home extends Component {
     // const socket = socketIOClient(endpoint);
     // socket.on('APICALL', (data) => this.setState({result: data}));
 
-    // socket = openSocket('http://127.0.0.1:3000');
-    const socket = openSocket('https://sheltered-badlands-12857.herokuapp.com');
+    const socket = openSocket('/');
+    this.setState({socket});
+    socket.on('success', (room) => {
+      console.log(`success in joining room: ${room}`);
+      if (room.split('to').includes(this.props.user.toString())) {
+        let inChatrooms = false;
+        this.state.chatrooms.forEach(function(rooms) {
+          if (rooms.room === room) {
+            inChatrooms = true;
+          }
+        });
+        if (inChatrooms === false) {
+          this.setState({chatrooms: [...this.state.chatrooms, {room: room, joined: false}]});
+        }
+      }
+      console.log('current chat rooms ~~~ ', this.state.chatrooms);
+    });
+
     socket.on('added order', (data) => {
       if (data.addOrder === true) {
         console.log('testing if orders live updating works ~~~~~~~');
@@ -100,8 +183,7 @@ class Home extends Component {
   }
 
   handleMessage(data) {
-    // socket = openSocket('http://127.0.0.1:3000');
-    const socket = openSocket('https://sheltered-badlands-12857.herokuapp.com');
+    const socket = openSocket('/');
     socket.emit('added order', data);
   }
 
@@ -143,85 +225,133 @@ class Home extends Component {
     });
 
     return (
-      <div className={classes.root}>
-        <Grid container spacing={32}>
-          {this.state.result.length > 0 && (
-            <Grid item xs={12}>
-              <Map result={this.state.result} />
-            </Grid>
-          )}
-
-          {/* this is a open dialog box so doesnt matter where it is */}
-          {this.state.displayadd && (
-            <NewOrder
-              user={this.props.user}
-              displayClose={this.handleClickClose}
-              update={this.updateOrder}
-              displayadd={this.state.displayadd}
-            />
-          )}
-          {this.state.result.length > 0 && (
-            <Grid item xs={12} sm={8}>
-              {/* <Orders result={this.state.result} user={this.props.user} /> */}
-              <MUIDataTable title={'All Orders'} data={newArry} columns={columns} options={options} />
-
-              <MyOrders user={this.props.user} result={this.state.result} updateOrder={this.updateOrder} />
-            </Grid>
-          )}
-          <Grid item xs={12} sm={4}>
-            <Grid container direction="row" justify="space-evenly" alignItems="center">
-              <Grid item>
-                <div>
-                  {this.props.loggedin && (
-                    <Button
-                      variant="extendedFab"
-                      aria-label="Delete"
-                      className={classes.button}
-                      onClick={this.handleClickOpen(this.state.scroll)}
-                    >
-                      <NavigationIcon className={classes.extendedIcon} />
-                      Add order
-                    </Button>
-                  )}
-                </div>
-              </Grid>
-              <Grid item>
-                <div>
-                  {this.props.loggedin && (
-                    <Button
-                      variant="extendedFab"
-                      aria-label="Delete"
-                      className={classes.button}
-                      onClick={() => this.handleChat(!this.state.displaychat)}
-                    >
-                      <NavigationIcon className={classes.extendedIcon} />
-                      Display Chatroom
-                    </Button>
-                  )}
-                </div>
-              </Grid>
-            </Grid>
-            <br />
-            <br />
-            {this.state.displaychat ? (
-              <Chatroom
-                username={this.props.username}
+      <Fragment>
+        <Dialog fullScreen open={this.state.chatPopup} onClose={this.handleChatClose} TransitionComponent={Transition}>
+          <AppBar className={classes.appBar}>
+            <Toolbar>
+              <IconButton color="inherit" onClick={this.handleChatClose} aria-label="Close">
+                <CloseIcon />
+              </IconButton>
+              <Typography variant="h6" color="inherit" className={classes.flex}>
+                Chatbox
+              </Typography>
+              <Button color="inherit" onClick={this.handleChatClose}>
+                Close
+              </Button>
+            </Toolbar>
+          </AppBar>
+          <div className={classes.root1}>
+            {this.state.chatrooms.map((room, index) => (
+              <TestingChat
+                key={index}
+                room={room}
                 user={this.props.user}
-                idMarker={this.props.idMarker}
-                messages={this.state.messages}
-                setMsgs={this.state.setMsgs}
-                handleMessage={this.handleMessage}
+                username={this.props.username}
+                socket={this.state.socket}
+                chatrooms={this.state.chatrooms}
+                setJoinedRoom={this.setJoinedRoom}
               />
-            ) : (
-              <Grid container direction="column" justify="space-evenly" alignItems="center">
-                <Grid item>
-                  <CurrentPrice />
-                </Grid>
+            ))}
+          </div>
+        </Dialog>
+
+        <div className={classes.root}>
+          <Grid container spacing={32}>
+            {this.state.result.length > 0 && (
+              <Grid item xs={12}>
+                <Map result={this.state.result} />
               </Grid>
             )}
+            {/* this is a open dialog box so doesnt matter where it is */}
+            {this.state.displayadd && (
+              <NewOrder
+                user={this.props.user}
+                displayClose={this.handleClickClose}
+                update={this.updateOrder}
+                displayadd={this.state.displayadd}
+              />
+            )}
+            {this.state.result.length > 0 && (
+              <Grid item xs={12} sm={8}>
+                {/* <Orders result={this.state.result} user={this.props.user} /> */}
+                <MUIDataTable title={'All Orders'} data={newArry} columns={columns} options={options} />
+
+                <MyOrders user={this.props.user} result={this.state.result} updateOrder={this.updateOrder} />
+              </Grid>
+            )}
+
+            <Grid item xs={12} sm={4}>
+              <Grid container direction="rows" justify="space-evenly" alignItems="center">
+                <Grid item>
+                  <div>
+                    {this.props.loggedin && (
+                      <Button
+                        style={{position: 'relative'}}
+                        className={classes.button}
+                        onClick={this.handleClickOpen(this.state.scroll)}
+                        variant="fab"
+                        color="primary"
+                        mini
+                      >
+                        <AddIcon />
+                      </Button>
+                    )}
+                  </div>
+                </Grid>
+                <Grid item>
+                  {/* <div className={classes.root1}>
+                {this.state.chatrooms.map((room, index) => (
+                  <TestingChat
+                    key={index}
+                    room={room}
+                    user={this.props.user}
+                    username={this.props.username}
+                    socket={this.state.socket}
+                    chatrooms={this.state.chatrooms}
+                    setJoinedRoom={this.setJoinedRoom}
+                  />
+                ))}
+              </div> */}
+                  <div>
+                    {this.props.loggedin && (
+                      <Button className={classes.button} onClick={this.handleChatOpen}>
+                        Chatroom
+                      </Button>
+                    )}
+                  </div>
+                </Grid>
+                {/* <Grid item>
+                  <div>
+                    {this.props.loggedin && (
+                      <Button className={classes.button} onClick={() => this.handleChat(!this.state.displaychat)}>
+                        Display Chatbox
+                      </Button>
+                    )}
+                  </div>
+                </Grid> */}
+              </Grid>
+              <br />
+              <br />
+              {this.state.displaychat ? (
+                <Chatroom
+                  username={this.props.username}
+                  user={this.props.user}
+                  idMarker={this.props.idMarker}
+                  messages={this.state.messages}
+                  setMsgs={this.state.setMsgs}
+                  handleMessage={this.handleMessage}
+                />
+              ) : (
+                <Grid container direction="column" justify="space-evenly" alignItems="center">
+                  <Grid item>
+                    <CurrentPrice />
+                  </Grid>
+                </Grid>
+              )}
+            </Grid>
           </Grid>
-        </Grid>
-      </div>
+        </div>
+      </Fragment>
     );
   }
 }

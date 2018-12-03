@@ -72,7 +72,12 @@ class Map extends Component {
       function createMarker(data, counterparty) {
         var image = '';
         if (data.ordertype === 'B') {
-          image = 'http://maps.google.com/mapfiles/ms/micons/blue.png';
+          // image = 'http://maps.google.com/mapfiles/ms/micons/blue.png';
+          image = {
+            url:
+              'http://www.iconarchive.com/download/i57834/icons-land/vista-map-markers/Map-Marker-Marker-Outside-Chartreuse.ico',
+            scaledSize: new google.maps.Size(40, 40)
+          };
         }
         var myLatLng = new google.maps.LatLng(data.meet_lat, data.meet_long);
         var marker = new google.maps.Marker({

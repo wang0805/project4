@@ -22,7 +22,7 @@ class Sgd extends React.Component {
 
   render() {
     const {classes} = this.props;
-    console.log('rendering SGD');
+    // console.log('rendering SGD');
     return (
       <div>
         <TextField
@@ -60,7 +60,7 @@ class Usd extends React.Component {
 
   render() {
     const {classes} = this.props;
-    console.log('rendering USD');
+    // console.log('rendering USD');
     return (
       <div>
         <TextField

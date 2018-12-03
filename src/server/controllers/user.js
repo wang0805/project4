@@ -14,7 +14,7 @@ module.exports = (db) => {
         console.error('error in getting back user index', error);
         request.sendStatus(500);
       } else {
-        console.log('user index result rows: ', result.rows);
+        // console.log('user index result rows: ', result.rows);
         var resultrows = result.rows;
         response.json(resultrows);
       }
@@ -41,7 +41,7 @@ module.exports = (db) => {
 
   const login = (request, response) => {
     db.user.login(request.body, (error, result) => {
-      console.log('result controller for login: ', result.rows);
+      // console.log('result controller for login: ', result.rows);
       if (error) {
         console.error('Query error', error);
       } else if (result.rows[0] != undefined) {
