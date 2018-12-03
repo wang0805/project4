@@ -57,10 +57,32 @@ class TestingChat extends Component {
       this.setState({messages: JSON.parse(localStorage.getItem(this.props.room.room))});
     }
 
+    //check if user has entered chatroom
+    socket.emit('hello', {room: this.props.room.room, user: this.props.username});
+    socket.on('helloback', (data) => {
+      if (data.room === this.props.room.room && data.user !== this.props.username) {
+        this.setState({
+          messages: [...this.state.messages, {message: `${data.user} has entered the chatroom`, from: 'Attn'}]
+        });
+      }
+    });
+
     socket.on('message', (data) => {
       console.log('data received from server to testing chat', data);
       if (data.room === this.props.room.room) {
         this.setState({messages: [...this.state.messages, data.data]});
+      }
+    });
+
+    //check if other user has left chatroom
+    socket.on('notice', (data) => {
+      if (data.room === this.props.room.room) {
+        this.setState({
+          messages: [
+            ...this.state.messages,
+            {message: `${data.user} has left the room and will be unable to see your reply`, from: 'Attn'}
+          ]
+        });
       }
     });
   }
@@ -69,6 +91,8 @@ class TestingChat extends Component {
     // if 'left room', you won't be able to display msgs after component unmount then mount agaain -> why?
     // this.props.socket.emit('leaveRoom', {room: this.props.room.room, user: this.props.user});
     localStorage.setItem(this.props.room.room, JSON.stringify(this.state.messages));
+    //tell other user that you have left chatroom
+    this.props.socket.emit('left', {room: this.props.room.room, user: this.props.username});
   }
 
   render() {

@@ -84,6 +84,13 @@ io.on('connection', (socket) => {
     });
   });
 
+  socket.on('left', (data) => {
+    io.to(data.room).emit('notice', data);
+  });
+  socket.on('hello', (data) => {
+    io.to(data.room).emit('helloback', data);
+  });
+
   socket.on('leaveRoom', (data) => {
     socket.leave(data.room, function(err) {
       console.log(err, socket.adapter.rooms, 'check if left room');
